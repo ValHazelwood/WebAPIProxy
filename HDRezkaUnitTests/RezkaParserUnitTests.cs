@@ -45,6 +45,10 @@ namespace HDRezkaUnitTests
 
             Assert.AreEqual(MediaType.Series, result.Type);
 
+            Assert.AreEqual(1, result.Episode);
+
+            Assert.AreEqual(1, result.Season);
+
             Assert.AreEqual(13, result.Translations[0].TranslationId);
 
             Assert.AreEqual("360p", result.Translations[0].CDNStreams[0].Quality);

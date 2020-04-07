@@ -24,8 +24,8 @@ namespace HDRezka.Controllers
             _logger = logger;                      
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<SearchResult>> Get(string q)
+        [HttpPost]
+        public async Task<IEnumerable<SearchResult>> Post([FromBody]string q)
         {
             if (string.IsNullOrEmpty(q)) return null;
 

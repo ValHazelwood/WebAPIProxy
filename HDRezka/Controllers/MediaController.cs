@@ -18,8 +18,8 @@ namespace HDRezka.Controllers
             _logger = logger;
         }
                 
-        [HttpGet]
-        public async Task<Media> Get(string url)
+        [HttpPost]
+        public async Task<Media> Post([FromBody]string url)
         {
             if (string.IsNullOrEmpty(url)) return null;
 

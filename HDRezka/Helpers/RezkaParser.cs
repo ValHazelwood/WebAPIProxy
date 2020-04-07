@@ -117,6 +117,14 @@ namespace HDRezka.Helpers
                     }
                 }
             };
+
+            if (mediaType == MediaType.Series)
+            {
+                media.Season = 1;
+
+                media.Episode = 1;
+            }
+
             return media;
         }
         private static CDNStream GetCDNStream(Regex urlRegExp, string cdnUrl)
