@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 
 namespace HDRezka.Helpers
 {
@@ -91,6 +92,31 @@ namespace HDRezka.Helpers
             }
 
             return node.InnerText;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jsText"></param>
+        /// <returns></returns>
+        public static CDNStream[] GetCDNStreams(string jsText)
+        {
+            var jObject = JObject.Parse(jsText);
+
+            var cdnUrlsArray = jObject["url"].ToString().Split(',');
+
+            var streams = new List<CDNStream>();
+
+            var urlRegExp = new Regex(URLS_REGEXP);
+
+            foreach (var cdnUrl in cdnUrlsArray)
+            {
+                CDNStream stream = GetCDNStream(urlRegExp, cdnUrl);
+
+                streams.Add(stream);
+            }
+
+            return streams.ToArray();
         }
 
         private static Media GetMedia(string jsText, Regex idRegExp)

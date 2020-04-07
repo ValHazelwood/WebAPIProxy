@@ -72,5 +72,21 @@ namespace HDRezkaUnitTests
             Assert.AreEqual(" (The Wire, сериал, 2002-2008)", result[0].Text);
             Assert.AreEqual("8.45", result[0].Rating);
         }
+
+        [TestMethod]
+        public void GetCDNStreams_Returns_Valid_Data()
+        {
+            var mockInput = @"{'success':true,'message':'','url':'[360p]https:\/\/load.hdrezka-ag.net\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/96017f0571adb0a66d1e3f26147217ce:2020041100\/240.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/fe088672471c26588147deee924efc4b:2020041100\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/240.mp4,[480p]https:\/\/load.hdrezka-ag.net\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/96017f0571adb0a66d1e3f26147217ce:2020041100\/360.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/3b529f82ca5928786e988a0f4d147a49:2020041100\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/360.mp4,[720p]https:\/\/load.hdrezka-ag.net\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/96017f0571adb0a66d1e3f26147217ce:2020041100\/480.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/101c9d76f6f06da7cf1e985849bccc94:2020041100\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/480.mp4,[1080p]https:\/\/load.hdrezka-ag.net\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/96017f0571adb0a66d1e3f26147217ce:2020041100\/720.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/6136628d535d0e5235107a8424886817:2020041100\/tvseries\/a17e9f9fe955f32942c96e0e581ba72d2d7bd920\/720.mp4','quality':'480p'}";
+
+            var result = RezkaParser.GetCDNStreams(mockInput);
+
+            Assert.AreEqual("360p", result[0].Quality);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/fe088672471c26588147deee924efc4b:2020041100/tvseries/a17e9f9fe955f32942c96e0e581ba72d2d7bd920/240.mp4", result[0].URL2);
+
+            Assert.AreEqual("1080p", result[3].Quality);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/6136628d535d0e5235107a8424886817:2020041100/tvseries/a17e9f9fe955f32942c96e0e581ba72d2d7bd920/720.mp4", result[3].URL2);
+        }
     }
 }
