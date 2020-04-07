@@ -9,23 +9,51 @@ namespace HDRezkaUnitTests
     public class RezkaParserUnitTests
     {
         [TestMethod]
-        public void GetMovieCDNStreamsFromJS_Returns_Valid_Data()
+        public void GetMediaFromJS_Returns_Valid_Data_For_Movie()
         {
             var mockInput = @"$(function () { sof.tv.initCDNMoviesEvents(33703, 0, 'rezka.ag', false, {'id':'cdnplayer','streams':'[360p]https:\/\/load.hdrezka-ag.net\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/deae4e32ca81c3cb79a1111fe3e519f3:2020040721\/240.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/b3e04764bde7b7657dc7e1bcf353f2da:2020040721\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/240.mp4,[480p]https:\/\/load.hdrezka-ag.net\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/deae4e32ca81c3cb79a1111fe3e519f3:2020040721\/360.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/d79d1496cc57d2000fbf00b7f993736d:2020040721\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/360.mp4,[720p]https:\/\/load.hdrezka-ag.net\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/deae4e32ca81c3cb79a1111fe3e519f3:2020040721\/480.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/313e7aea979f7fe9e7830f87c526364a:2020040721\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/480.mp4,[1080p]https:\/\/load.hdrezka-ag.net\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/deae4e32ca81c3cb79a1111fe3e519f3:2020040721\/720.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/f02335870d7abea63ebb1a3a9c0f211a:2020040721\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/720.mp4,[1080p Ultra]https:\/\/load.hdrezka-ag.net\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/deae4e32ca81c3cb79a1111fe3e519f3:2020040721\/1080.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/8599895da0e7d16c7802f46e13a5ee28:2020040721\/movies\/98309768fbe048b649d8e3071540d84cdf90aaab\/1080.mp4','default_quality':'480p','hlsconfig':{'maxBufferLength':180,'maxMaxBufferLength':600,'maxBufferSize':33554432000},'geo_ip':'104.42.145.67','geo_iso':'us','preroll':'https:\/\/franecki.net\/assets\/vendor\/3736f6ea7b7e115cbb4f5c2ea8f5f2df.xml?v=3.0 and https:\/\/franecki.net\/assets\/vendor\/49ae0420d7a42849fd13a5e3ae4fc009.xml?v=3.0'}); }); $(function () { sof.tv.initWatchingEvents(33703); }); (function () { $(function () { var comment_id = 0, match = window.location.hash.match(/comment(\d+)/i), ws_usage = 5, show_mode = 0, enabled_mode = 1, callback = function () {}; if (match !== null) { comment_id = match[1]; } callback = function (last_update_id) { if (comment_id > 0) { setTimeout(function () { var comment = $('#comments-tree-item-'+ comment_id +' > div:not(:animated)'); comment.addClass('now-added'); sof.helper.scrollTo($('#comments-tree-item-'+ comment_id), 15, 300, function () { comment.animate({backgroundColor: 'transparent'}, 2000, function () { comment.removeClass('now-added').removeAttr('style'); }); }); }, 200); } if (ws_usage < 50) { sof.comments.initWSComments('wss://hdrezka.ws', 33703, 0, last_update_id, null); } }; if (enabled_mode == 1 && (show_mode == 0 || ws_usage < 5)) { sof.comments.loadComments(33703, 1, true, 0, comment_id, callback); } }); } ());";
-
-            //var mockInput = @" $(function () { sof.tv.initCDNSeriesEvents(1931, 13, 1, 1, false, 'rezka.ag', false, {'id':'cdnplayer','streams':'[360p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/240.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/adc0a6b582709a57e32af304d326352a:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/240.mp4,[480p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/360.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/3e8b1d1452cce378a6ee8c62db3ae658:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/360.mp4,[720p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/480.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/7ae4005c0713ca5a86ff84e208a712e9:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/480.mp4,[1080p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/720.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/ff09fd32196ac1174e01d31f28e97548:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/720.mp4','default_quality':'480p','hlsconfig':{'maxBufferLength':180,'maxMaxBufferLength':600,'maxBufferSize':33554432000},'geo_ip':'62.210.110.54','geo_iso':'fr','preroll':'https:\/\/franecki.net\/assets\/vendor\/3736f6ea7b7e115cbb4f5c2ea8f5f2df.xml?v=3.0 and https:\/\/franecki.net\/assets\/vendor\/49ae0420d7a42849fd13a5e3ae4fc009.xml?v=3.0'}); }); $(function () { sof.tv.initWatchingEvents(1931); }); (function () { $(function () { var comment_id = 0, match = window.location.hash.match(/comment(\d+)/i), ws_usage = 5, show_mode = 0, enabled_mode = 1, callback = function () {}; if (match !== null) { comment_id = match[1]; } callback = function (last_update_id) { if (comment_id > 0) { setTimeout(function () { var comment = $('#comments-tree-item-'+ comment_id +' > div:not(:animated)'); comment.addClass('now-added'); sof.helper.scrollTo($('#comments-tree-item-'+ comment_id), 15, 300, function () { comment.animate({backgroundColor: 'transparent'}, 2000, function () { comment.removeClass('now-added').removeAttr('style'); }); }); }, 200); } if (ws_usage < 50) { sof.comments.initWSComments('wss://hdrezka.ws', 1931, 0, last_update_id, null); } }; if (enabled_mode == 1 && (show_mode == 0 || ws_usage < 5)) { sof.comments.loadComments(1931, 1, true, 0, comment_id, callback); } }); } ());";
 
             var result = RezkaParser.GetMediaFromJS(mockInput);
 
             Assert.AreEqual(33703, result.Id);
 
-            Assert.AreEqual("360p", result.CDNStreams[0].Quality);
+            Assert.AreEqual(0, result.CurrentTranslationId);
 
-            Assert.AreEqual("https://load.hdrezka-ag.net/b3e04764bde7b7657dc7e1bcf353f2da:2020040721/movies/98309768fbe048b649d8e3071540d84cdf90aaab/240.mp4", result.CDNStreams[0].URL2);
+            Assert.AreEqual(MediaType.Movies, result.Type);
 
-            Assert.AreEqual("1080p Ultra", result.CDNStreams[4].Quality);
+            Assert.AreEqual(0, result.Translations[0].TranslationId);
 
-            Assert.AreEqual("https://load.hdrezka-ag.net/8599895da0e7d16c7802f46e13a5ee28:2020040721/movies/98309768fbe048b649d8e3071540d84cdf90aaab/1080.mp4", result.CDNStreams[4].URL2);
+            Assert.AreEqual("360p", result.Translations[0].CDNStreams[0].Quality);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/b3e04764bde7b7657dc7e1bcf353f2da:2020040721/movies/98309768fbe048b649d8e3071540d84cdf90aaab/240.mp4", result.Translations[0].CDNStreams[0].URL2);
+
+            Assert.AreEqual("1080p Ultra", result.Translations[0].CDNStreams[4].Quality);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/8599895da0e7d16c7802f46e13a5ee28:2020040721/movies/98309768fbe048b649d8e3071540d84cdf90aaab/1080.mp4", result.Translations[0].CDNStreams[4].URL2);
+        }
+
+        [TestMethod]
+        public void GetMediaFromJS_Returns_Valid_Data_For_Series()
+        {  
+            var mockInput = @" $(function () { sof.tv.initCDNSeriesEvents(1931, 13, 1, 1, false, 'rezka.ag', false, {'id':'cdnplayer','streams':'[360p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/240.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/adc0a6b582709a57e32af304d326352a:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/240.mp4,[480p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/360.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/3e8b1d1452cce378a6ee8c62db3ae658:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/360.mp4,[720p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/480.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/7ae4005c0713ca5a86ff84e208a712e9:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/480.mp4,[1080p]https:\/\/load.hdrezka-ag.net\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/8f33fb24ebee420fe8322acb5cabfe7c:2020040920\/720.mp4:hls:manifest.m3u8 or https:\/\/load.hdrezka-ag.net\/ff09fd32196ac1174e01d31f28e97548:2020040920\/tvseries\/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d\/720.mp4','default_quality':'480p','hlsconfig':{'maxBufferLength':180,'maxMaxBufferLength':600,'maxBufferSize':33554432000},'geo_ip':'62.210.110.54','geo_iso':'fr','preroll':'https:\/\/franecki.net\/assets\/vendor\/3736f6ea7b7e115cbb4f5c2ea8f5f2df.xml?v=3.0 and https:\/\/franecki.net\/assets\/vendor\/49ae0420d7a42849fd13a5e3ae4fc009.xml?v=3.0'}); }); $(function () { sof.tv.initWatchingEvents(1931); }); (function () { $(function () { var comment_id = 0, match = window.location.hash.match(/comment(\d+)/i), ws_usage = 5, show_mode = 0, enabled_mode = 1, callback = function () {}; if (match !== null) { comment_id = match[1]; } callback = function (last_update_id) { if (comment_id > 0) { setTimeout(function () { var comment = $('#comments-tree-item-'+ comment_id +' > div:not(:animated)'); comment.addClass('now-added'); sof.helper.scrollTo($('#comments-tree-item-'+ comment_id), 15, 300, function () { comment.animate({backgroundColor: 'transparent'}, 2000, function () { comment.removeClass('now-added').removeAttr('style'); }); }); }, 200); } if (ws_usage < 50) { sof.comments.initWSComments('wss://hdrezka.ws', 1931, 0, last_update_id, null); } }; if (enabled_mode == 1 && (show_mode == 0 || ws_usage < 5)) { sof.comments.loadComments(1931, 1, true, 0, comment_id, callback); } }); } ());";
+
+            var result = RezkaParser.GetMediaFromJS(mockInput);
+
+            Assert.AreEqual(1931, result.Id);
+
+            Assert.AreEqual(13, result.CurrentTranslationId);
+
+            Assert.AreEqual(MediaType.Series, result.Type);
+
+            Assert.AreEqual(13, result.Translations[0].TranslationId);
+
+            Assert.AreEqual("360p", result.Translations[0].CDNStreams[0].Quality);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/adc0a6b582709a57e32af304d326352a:2020040920/tvseries/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d/240.mp4", result.Translations[0].CDNStreams[0].URL2);
+
+            Assert.AreEqual("1080p", result.Translations[0].CDNStreams[3].Quality);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/ff09fd32196ac1174e01d31f28e97548:2020040920/tvseries/35f9a26c7f3ed3f0ddc121ba7cc417db7f52a10d/720.mp4", result.Translations[0].CDNStreams[3].URL2);
         }
 
         [TestMethod]

@@ -13,24 +13,13 @@ namespace HDRezka.Helpers
     {
         const string SEARCH_URL = @"https://rezka.ag/engine/ajax/search.php";
 
-        const string MOVIE_SCRIPT_SEARCH_PATTERN = "//script[contains(., 'initCDNMoviesEvents')]";
-
-        const string SERIES_SCRIPT_SEARCH_PATTERN = "//script[contains(., 'initCDNSeriesEvents')]";
-
-        public static async Task<string> GetCDNScript(string url)
+        public static async Task<HtmlDocument> GetMediaHtmlDocument(string url)
         {
             HtmlWeb web = new HtmlWeb();
 
             var htmlDoc = await web.LoadFromWebAsync(url);
 
-            var node = htmlDoc.DocumentNode.SelectSingleNode(MOVIE_SCRIPT_SEARCH_PATTERN);
-
-            if (node == null)
-            {
-                node = htmlDoc.DocumentNode.SelectSingleNode(SERIES_SCRIPT_SEARCH_PATTERN);
-            }
-
-            return node.InnerText;
+            return htmlDoc;
         }
 
         public static async Task<string> GetSearchHtml(string text)

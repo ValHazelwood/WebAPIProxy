@@ -9,12 +9,14 @@ namespace HDRezka
     {
         public int Id { get; set; }
                 
-        public int? TranslationId { get; set; }
+        public int? CurrentTranslationId { get; set; }
+
+        public MediaType Type { get; set; }
 
         public int? Season { get; set; }
 
         public int? Episode { get; set; }
 
-        public CDNStream[] CDNStreams { get; set; }
+        public Translation[] Translations { get; set; }
     }
 }

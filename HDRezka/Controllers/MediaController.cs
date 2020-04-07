@@ -23,7 +23,9 @@ namespace HDRezka.Controllers
         {
             if (string.IsNullOrEmpty(url)) return null;
 
-            var jsText = await RezkaFetch.GetCDNScript(url);
+            var htmlDocument = await RezkaFetch.GetMediaHtmlDocument(url);
+
+            var jsText = RezkaParser.GetCDNScriptText(htmlDocument);
 
             return RezkaParser.GetMediaFromJS(jsText);
         }
