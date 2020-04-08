@@ -5,6 +5,7 @@ using HtmlAgilityPack;
 using HDRezka.Helpers;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Linq;
 
 namespace HDRezka.Controllers
 {
@@ -30,7 +31,13 @@ namespace HDRezka.Controllers
 
             var jsText = RezkaParser.GetCDNScriptText(htmlDocument);
 
-            return RezkaParser.GetMediaFromJS(jsText);
+            var media = RezkaParser.GetMediaFromJS(jsText);
+
+            var translations = RezkaParser.GetTranslations(htmlDocument);
+
+            media.Translations = media.Translations.Union(translations.Where(x => x.Id != media.CurrentTranslationId)).ToArray();
+
+            return media;
         }
     }
 }

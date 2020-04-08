@@ -24,28 +24,13 @@ namespace HDRezka.Helpers
         /// <returns></returns>
         public static Media GetMediaFromJS(string jsText)
         {
-            var idRegExp = new Regex(ID_REGEXP);
+            var media = GetMedia(jsText);
 
-            var media = GetMedia(jsText, idRegExp);
-
-            var cdnUrlsArray = GetCDNUrlsText(jsText);
-
-            var streams = new List<CDNStream>();
-
-            var urlRegExp = new Regex(URLS_REGEXP);
-
-            foreach (var cdnUrl in cdnUrlsArray)
-            {
-                CDNStream stream = GetCDNStream(urlRegExp, cdnUrl);
-
-                streams.Add(stream);
-            }
-
-            media.Translations[0].CDNStreams = streams.ToArray();
+            media.Translations[0].CDNStreams = GetCDNUrlsText(jsText).Select(x => GetCDNStream(x)).ToArray();
 
             return media;
         }
-                
+
         /// <summary>
         /// 
         /// </summary>
@@ -53,30 +38,22 @@ namespace HDRezka.Helpers
         /// <returns></returns>
         public static SearchResult[] GetSearchResult(string htmlText)
         {
-            var result = new List<SearchResult>();
-
             var htmlDoc = new HtmlDocument();
 
             htmlDoc.LoadHtml(htmlText);
 
-            var nodes = htmlDoc.DocumentNode.SelectNodes("//ul/li/a");
+            return htmlDoc.DocumentNode.SelectNodes("//ul/li/a")
+                .Select(x => new SearchResult
+                {
+                    Name = x.ChildNodes.First(x => x.Name == "span").InnerText,
+                    Text = x.ChildNodes.First(x => x.Name == "#text").InnerText,
+                    Rating = x.ChildNodes.Last(x => x.Name == "span").InnerText,
+                    URL = x.Attributes.Single(x => x.Name == "href").Value
 
-            foreach (var node in nodes)
-            {
-                var url = node.Attributes.Single(x => x.Name == "href").Value;
+                }).ToArray();
 
-                var name = node.ChildNodes.First(x => x.Name == "span").InnerText;
-
-                var text = node.ChildNodes.First(x => x.Name == "#text").InnerText;
-
-                var rating = node.ChildNodes.Last(x => x.Name == "span").InnerText;
-
-                result.Add(new SearchResult { Name = name, Text = text, Rating = rating, URL = url });
-            }
-
-            return result.ToArray();
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -103,24 +80,53 @@ namespace HDRezka.Helpers
         {
             var jObject = JObject.Parse(jsText);
 
-            var cdnUrlsArray = jObject["url"].ToString().Split(',');
-
-            var streams = new List<CDNStream>();
-
-            var urlRegExp = new Regex(URLS_REGEXP);
-
-            foreach (var cdnUrl in cdnUrlsArray)
-            {
-                CDNStream stream = GetCDNStream(urlRegExp, cdnUrl);
-
-                streams.Add(stream);
-            }
-
-            return streams.ToArray();
+            return jObject["url"].ToString().Split(',').Select(x => GetCDNStream(x)).ToArray();
         }
 
-        private static Media GetMedia(string jsText, Regex idRegExp)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="htmlDoc"></param>
+        /// <returns></returns>
+        public static Translation[] GetTranslations(HtmlDocument htmlDoc)
         {
+            var translatorsBlock = htmlDoc.DocumentNode.SelectSingleNode("//div[contains(@class, 'b-translators__block')]");
+
+            if (translatorsBlock != null && translatorsBlock.ChildNodes.Count > 0)
+            {
+                var translatorsList = translatorsBlock.SelectNodes("ul/li");
+
+                return translatorsList
+                .Select(x => new Translation
+                {
+                    Id = Convert.ToInt32(x.Attributes.Single(x => x.Name == "data-translator_id").Value),
+                    Name = x.InnerText,
+                    CDNStreams = GetCDNStreamsFromDataAttribute(x)
+
+                }).ToArray();
+            }
+            else
+            {
+                return new Translation[0];
+            }
+        }
+
+        private static CDNStream[] GetCDNStreamsFromDataAttribute(HtmlNode htmlNode)
+        {
+            var dataAttribute = htmlNode.Attributes.SingleOrDefault(k => k.Name == "data-cdn_url");
+
+            if (dataAttribute == null)
+            {
+                return new CDNStream[0];
+            }
+
+            return dataAttribute.Value.Split(",").Select(t => GetCDNStream(t)).ToArray();
+        }
+
+        private static Media GetMedia(string jsText)
+        {
+            var idRegExp = new Regex(ID_REGEXP);
+
             var idMatches = idRegExp.Match(jsText);
 
             var translationId = Convert.ToInt32(idMatches.Groups[3].Value);
@@ -139,7 +145,8 @@ namespace HDRezka.Helpers
 
                 Translations = new[] {
                     new Translation {
-                        TranslationId = translationId
+                        Id = translationId,
+                        Name = "Default"
                     }
                 }
             };
@@ -153,8 +160,10 @@ namespace HDRezka.Helpers
 
             return media;
         }
-        private static CDNStream GetCDNStream(Regex urlRegExp, string cdnUrl)
+        private static CDNStream GetCDNStream(string cdnUrl)
         {
+            var urlRegExp = new Regex(URLS_REGEXP);
+
             var matches = urlRegExp.Matches(Regex.Unescape(cdnUrl));
 
             var stream = new CDNStream

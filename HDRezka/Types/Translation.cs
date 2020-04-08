@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace HDRezka
+﻿namespace HDRezka
 {
     public class Translation
     {
-        public int? TranslationId { get; set; }
+        public int? Id { get; set; }
+
+        public string Name { get; set; }
+
         public CDNStream[] CDNStreams { get; set; }
     }
 }

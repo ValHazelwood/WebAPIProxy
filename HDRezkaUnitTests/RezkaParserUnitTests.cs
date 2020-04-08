@@ -1,5 +1,6 @@
 using HDRezka;
 using HDRezka.Helpers;
+using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace HDRezkaUnitTests
 
             Assert.AreEqual(MediaType.Movies, result.Type);
 
-            Assert.AreEqual(0, result.Translations[0].TranslationId);
+            Assert.AreEqual(0, result.Translations[0].Id);
 
             Assert.AreEqual("360p", result.Translations[0].CDNStreams[0].Quality);
 
@@ -49,7 +50,7 @@ namespace HDRezkaUnitTests
 
             Assert.AreEqual(1, result.Season);
 
-            Assert.AreEqual(13, result.Translations[0].TranslationId);
+            Assert.AreEqual(13, result.Translations[0].Id);
 
             Assert.AreEqual("360p", result.Translations[0].CDNStreams[0].Quality);
 
@@ -87,6 +88,44 @@ namespace HDRezkaUnitTests
             Assert.AreEqual("1080p", result[3].Quality);
 
             Assert.AreEqual("https://load.hdrezka-ag.net/6136628d535d0e5235107a8424886817:2020041100/tvseries/a17e9f9fe955f32942c96e0e581ba72d2d7bd920/720.mp4", result[3].URL2);
+        }
+
+        [TestMethod]
+        public void GetTranslations_Returns_Valid_Data()
+        {
+            var mockInput = @"<div class='b-translators__block'> <div class='b-translators__title'>В русской озвучке от:</div> <ul id='translators-list' class='b-translators__list'><li title='многоголосый закадровый' class='b-translator__item active' data-id='6756' data-translator_id='59' data-cdn_url='[360p]https://load.hdrezka-ag.net/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/5a9c4ec19ee23def3a7801f9cab474fb:2020041119/240.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/cea26433650e118f7b590ca058510c48:2020041119/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/240.mp4,[480p]https://load.hdrezka-ag.net/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/5a9c4ec19ee23def3a7801f9cab474fb:2020041119/360.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/5e87941ba90f7bbcb14a7d2ed0acac12:2020041119/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/360.mp4,[720p]https://load.hdrezka-ag.net/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/5a9c4ec19ee23def3a7801f9cab474fb:2020041119/480.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/a72595d54d06de2a37c3326dc76d997c:2020041119/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/480.mp4,[1080p]https://load.hdrezka-ag.net/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/5a9c4ec19ee23def3a7801f9cab474fb:2020041119/720.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/ce236caacc278be9294e53d5c919e036:2020041119/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/720.mp4' data-cdn_quality='480p'>многоголосый закадровый</li><li title='Гаврилов' class='b-translator__item' data-id='6756' data-translator_id='53' data-cdn_url='[360p]https://load.hdrezka-ag.net/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/41d89734fed5e966629d31d247a312b7:2020041119/240.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/b06e126e3e3285171f952dbd655045e3:2020041119/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/240.mp4,[480p]https://load.hdrezka-ag.net/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/41d89734fed5e966629d31d247a312b7:2020041119/360.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/94694024f7829dac43ab64c44b7f7265:2020041119/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/360.mp4,[720p]https://load.hdrezka-ag.net/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/41d89734fed5e966629d31d247a312b7:2020041119/480.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/28b22714824f84d7330b06e7c0d293b4:2020041119/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/480.mp4,[1080p]https://load.hdrezka-ag.net/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/41d89734fed5e966629d31d247a312b7:2020041119/720.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/ebe243a091d8ede6e892acaa41874adf:2020041119/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/720.mp4,[1080p Ultra]https://load.hdrezka-ag.net/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/41d89734fed5e966629d31d247a312b7:2020041119/1080.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/17c51e06f2af1e88045f80d12905055a:2020041119/movies/e9cad78488be7d26ca0392f75bd2e745ff6b943c/1080.mp4' data-cdn_quality='480p'>Гаврилов</li><li title='Оригинал' class='b-translator__item' data-id='6756' data-translator_id='65' data-cdn_url='[360p]https://load.hdrezka-ag.net/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/7160a1d805a154ff83d3dc0bb4be328e:2020041119/240.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/2cc5c184997c67e2743933ef6ff87e18:2020041119/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/240.mp4,[480p]https://load.hdrezka-ag.net/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/7160a1d805a154ff83d3dc0bb4be328e:2020041119/360.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/3177efe8759d072f725a81f4d6f1e134:2020041119/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/360.mp4,[720p]https://load.hdrezka-ag.net/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/7160a1d805a154ff83d3dc0bb4be328e:2020041119/480.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/97b1f8a008f369789358bdc732919291:2020041119/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/480.mp4,[1080p]https://load.hdrezka-ag.net/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/7160a1d805a154ff83d3dc0bb4be328e:2020041119/720.mp4:hls:manifest.m3u8 or https://load.hdrezka-ag.net/1b18ae107eb5faee00854c4cade17e44:2020041119/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/720.mp4' data-cdn_quality='480p'>Оригинал</li></ul> </div>";
+
+            var htmlDoc = new HtmlDocument();
+
+            htmlDoc.LoadHtml(mockInput);
+
+            var result = RezkaParser.GetTranslations(htmlDoc);
+
+            Assert.AreEqual(59,result[0].Id);
+
+            Assert.AreEqual("многоголосый закадровый", result[0].Name);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/cea26433650e118f7b590ca058510c48:2020041119/movies/5e8e2ce0bbd8dbcf7d91863019af6b1531bddcad/240.mp4", result[0].CDNStreams[0].URL2);
+
+            Assert.AreEqual(65, result[2].Id);
+
+            Assert.AreEqual("Оригинал", result[2].Name);
+
+            Assert.AreEqual("https://load.hdrezka-ag.net/1b18ae107eb5faee00854c4cade17e44:2020041119/movies/b21ec9e28f8cfb29317886eda66b0588036ad8f3/720.mp4", result[2].CDNStreams[3].URL2);
+        }
+
+        [TestMethod]
+        public void GetTranslations_With_Empty_Div_Returns_Empty_Array()
+        {
+            var mockInput = @"<div class='b-translators__block'></div>";
+
+            var htmlDoc = new HtmlDocument();
+
+            htmlDoc.LoadHtml(mockInput);
+
+            var result = RezkaParser.GetTranslations(htmlDoc);
+
+            Assert.AreEqual(0, result.Length);
         }
     }
 }
