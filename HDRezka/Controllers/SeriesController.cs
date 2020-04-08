@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using HDRezka.Helpers;
 using HDRezka.Types;
@@ -12,16 +13,18 @@ namespace HDRezka.Controllers
     public class SeriesController : ControllerBase
     {
         private readonly ILogger<SeriesController> _logger;
+        private readonly RezkaFetch _rezkaFetch;
 
-        public SeriesController(ILogger<SeriesController> logger)
+        public SeriesController(ILogger<SeriesController> logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
+            _rezkaFetch = new RezkaFetch(clientFactory);
         }
 
         [HttpPost]
         public async Task<IEnumerable<CDNStream>> Post(CDNSeriesRequest request)
         {
-            var response = await RezkaFetch.GetCDNSeries(request);
+            var response = await _rezkaFetch.GetCDNSeries(request);
 
             return RezkaParser.GetCDNStreams(response);
         }

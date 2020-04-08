@@ -10,21 +10,36 @@ using System.Threading.Tasks;
 
 namespace HDRezka.Helpers
 {
-    public static class RezkaFetch
+    public class RezkaFetch
     {
         const string SEARCH_URL = @"https://rezka.ag/engine/ajax/search.php";
         const string CDN_SERIES_URL = @"https://rezka.ag/ajax/get_cdn_series/?t=";
+
+        private readonly IHttpClientFactory _clientFactory;
+
+        public RezkaFetch(IHttpClientFactory clientFactory)
+        {
+            _clientFactory = clientFactory;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static async Task<HtmlDocument> GetMediaHtmlDocument(string url)
+        public async Task<HtmlDocument> GetMediaHtmlDocument(string url)
         {
-            HtmlWeb web = new HtmlWeb();
+            var uri = new Uri(url);
 
-            var htmlDoc = await web.LoadFromWebAsync(url);
+            var httpClient = _clientFactory.CreateClient("rezka");
+
+            var response = await httpClient.GetAsync(uri);
+
+            var resultString = await response.Content.ReadAsStringAsync();
+
+            var htmlDoc = new HtmlDocument();
+
+            htmlDoc.LoadHtml(resultString);
 
             return htmlDoc;
         }
@@ -34,28 +49,11 @@ namespace HDRezka.Helpers
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static async Task<string> GetSearchHtml(string text)
+        public async Task<string> GetSearchHtml(string text)
         {
             var uri = new Uri(SEARCH_URL);
 
-            var handler = new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip
-                                     | DecompressionMethods.Deflate
-            };
-
-            using var httpClient = new HttpClient(handler) { BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority)) };
-
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
-            httpClient.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
-            httpClient.DefaultRequestHeaders.Add("Referer", uri.GetLeftPart(UriPartial.Authority));
-            httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");
-            httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
-            httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
-            httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
-            httpClient.DefaultRequestHeaders.Add("Accept", "text/html, */*; q=0.01");
+            var httpClient = _clientFactory.CreateClient("rezka");
 
             HttpContent content = new FormUrlEncodedContent(new[]
             {
@@ -74,31 +72,14 @@ namespace HDRezka.Helpers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public static async Task<string> GetCDNSeries(CDNSeriesRequest request)
+        public async Task<string> GetCDNSeries(CDNSeriesRequest request)
         {
             var timestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
             var uri = new Uri(CDN_SERIES_URL + timestamp);
 
-            var handler = new HttpClientHandler
-            {
-                AutomaticDecompression = DecompressionMethods.GZip
-                                     | DecompressionMethods.Deflate
-            };
+            var httpClient = _clientFactory.CreateClient("rezka");
 
-            using var httpClient = new HttpClient(handler) { BaseAddress = new Uri(uri.GetLeftPart(UriPartial.Authority)) };
-
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
-            httpClient.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
-            httpClient.DefaultRequestHeaders.Add("Referer", uri.GetLeftPart(UriPartial.Authority));
-            httpClient.DefaultRequestHeaders.Add("Pragma", "no-cache");
-            httpClient.DefaultRequestHeaders.Add("Connection", "keep-alive");
-            httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
-            httpClient.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
-            httpClient.DefaultRequestHeaders.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-                        
             HttpContent content = new FormUrlEncodedContent(new[]
             {
                     new KeyValuePair<string, string>("id", request.Id.ToString()),
@@ -113,7 +94,6 @@ namespace HDRezka.Helpers
             var result = await response.Content.ReadAsStringAsync();
 
             return result;
-        }
-
+        }        
     }
 }

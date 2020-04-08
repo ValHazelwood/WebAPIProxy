@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using HtmlAgilityPack;
 using HDRezka.Helpers;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace HDRezka.Controllers
 {
@@ -12,10 +13,12 @@ namespace HDRezka.Controllers
     public class MediaController : ControllerBase
     {
         private readonly ILogger<MediaController> _logger;
+        private readonly RezkaFetch _rezkaFetch;
 
-        public MediaController(ILogger<MediaController> logger)
+        public MediaController(ILogger<MediaController> logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
+            _rezkaFetch = new RezkaFetch(clientFactory);
         }
                 
         [HttpPost]
@@ -23,7 +26,7 @@ namespace HDRezka.Controllers
         {
             if (string.IsNullOrEmpty(url)) return null;
 
-            var htmlDocument = await RezkaFetch.GetMediaHtmlDocument(url);
+            var htmlDocument = await _rezkaFetch.GetMediaHtmlDocument(url);
 
             var jsText = RezkaParser.GetCDNScriptText(htmlDocument);
 

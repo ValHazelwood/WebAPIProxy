@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace HDRezka
 {
@@ -29,7 +33,24 @@ namespace HDRezka
                 configuration.RootPath = "ClientApp/build";
             });
 
-            //services.AddHttpClient();
+            services.AddHttpClient("rezka", c => 
+            {
+                c.BaseAddress = new Uri("https://rezka.ag");
+                c.DefaultRequestHeaders.Accept.Clear();
+                c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
+                c.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
+                c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
+                c.DefaultRequestHeaders.Add("Referer", "https://rezka.ag");
+                c.DefaultRequestHeaders.Add("Pragma", "no-cache");
+                c.DefaultRequestHeaders.Add("Connection", "keep-alive");
+                c.DefaultRequestHeaders.Add("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
+                c.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate, br");
+                c.DefaultRequestHeaders.Add("Accept", "application/json, text/javascript, */*; q=0.01");
+
+            }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

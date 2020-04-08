@@ -18,10 +18,12 @@ namespace HDRezka.Controllers
     public class SearchController : ControllerBase
     {
         private readonly ILogger<SearchController> _logger;
-        
-        public SearchController(ILogger<SearchController> logger)
+        private readonly RezkaFetch _rezkaFetch;
+
+        public SearchController(ILogger<SearchController> logger, IHttpClientFactory clientFactory)
         {
-            _logger = logger;                      
+            _logger = logger;
+            _rezkaFetch = new RezkaFetch(clientFactory);
         }
 
         [HttpPost]
@@ -29,7 +31,7 @@ namespace HDRezka.Controllers
         {
             if (string.IsNullOrEmpty(q)) return null;
 
-            var htmlText =  await RezkaFetch.GetSearchHtml(q);
+            var htmlText =  await _rezkaFetch.GetSearchHtml(q);
 
             return RezkaParser.GetSearchResult(htmlText);
         }
