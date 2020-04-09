@@ -6,8 +6,8 @@
 
         public int TranslationId { get; set; }
 
-        public int Season { get; set; }
+        public int? Season { get; set; }
 
-        public int Episode { get; set; }
+        public int? Episode { get; set; }
     }
 }

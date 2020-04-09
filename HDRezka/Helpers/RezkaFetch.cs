@@ -72,7 +72,7 @@ namespace HDRezka.Helpers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<string> GetCDNSeries(CDNSeriesRequest request)
+        public async Task<string> GetCDNSeries(CDNSeriesRequest request, string actionType)
         {
             var timestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
@@ -80,20 +80,38 @@ namespace HDRezka.Helpers
 
             var httpClient = _clientFactory.CreateClient("rezka");
 
-            HttpContent content = new FormUrlEncodedContent(new[]
-            {
-                    new KeyValuePair<string, string>("id", request.Id.ToString()),
-                    new KeyValuePair<string, string>("translator_id", request.TranslationId.ToString()),
-                    new KeyValuePair<string, string>("season", request.Season.ToString()),
-                    new KeyValuePair<string, string>("episode", request.Episode.ToString()),
-                    new KeyValuePair<string, string>("action", "get_stream")
-            });
+            var content = GetHttpContent(request, actionType);
 
             var response = await httpClient.PostAsync(uri, content);
 
             var result = await response.Content.ReadAsStringAsync();
 
             return result;
-        }        
+        }
+
+        private static HttpContent GetHttpContent(CDNSeriesRequest request, string actionType)
+        {
+            var fields = new List<KeyValuePair<string, string>>()
+            {
+                    new KeyValuePair<string, string>("id", request.Id.ToString()),
+                    new KeyValuePair<string, string>("translator_id", request.TranslationId.ToString()),
+                    new KeyValuePair<string, string>("action", actionType)
+            };
+
+            if (actionType == SeriesActionType.GetStream)
+            {
+                var extraFields = new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("season", request.Season.ToString()),
+                    new KeyValuePair<string, string>("episode", request.Episode.ToString())
+                };
+
+                fields.AddRange(extraFields);
+            }
+
+            var content = new FormUrlEncodedContent(fields);
+
+            return content;
+        }
     }
 }

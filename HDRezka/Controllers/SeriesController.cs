@@ -24,7 +24,7 @@ namespace HDRezka.Controllers
         [HttpPost]
         public async Task<IEnumerable<CDNStream>> Post(CDNSeriesRequest request)
         {
-            var response = await _rezkaFetch.GetCDNSeries(request);
+            var response = await _rezkaFetch.GetCDNSeries(request, SeriesActionType.GetStream);
 
             return RezkaParser.GetCDNStreams(response);
         }

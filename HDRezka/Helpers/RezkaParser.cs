@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using HDRezka.Types;
 using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 
@@ -16,6 +17,8 @@ namespace HDRezka.Helpers
         const string URLS_REGEXP = @"^\[(\d+p.*)\](https:.+)\s+or\s+(https:.+)$";
 
         const string ID_REGEXP = @"^.+initCDN(Series|Movies)Events\((\d+),\s(\d+),.+$";
+
+        const string EPISODE_SERIES_REGEXP = @"^.+initCDNSeriesEvents\(\d+,\s\d+,\s(\d+),\s(\d+),.+$";
 
         /// <summary>
         /// 
@@ -81,6 +84,44 @@ namespace HDRezka.Helpers
             var jObject = JObject.Parse(jsText);
 
             return jObject["url"].ToString().Split(',').Select(x => GetCDNStream(x)).ToArray();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="jsText"></param>
+        /// <returns></returns>
+        public static Season[] GetSeasons(string jsText)
+        {
+            var jObject = JObject.Parse(jsText);
+
+            var htmlEpisodes = jObject["episodes"].ToString();
+
+            var htmlEpisodesDoc = new HtmlDocument();
+
+            htmlEpisodesDoc.LoadHtml(htmlEpisodes);
+
+            var episodesList = htmlEpisodesDoc.DocumentNode.SelectNodes("//ul/li");
+
+            var seasons = new Dictionary<int, List<int>>();
+
+            foreach (var item in episodesList)
+            {
+                var seasonId = Convert.ToInt32(item.Attributes.Single(x => x.Name == "data-season_id").Value);
+
+                var episodeId = Convert.ToInt32(item.Attributes.Single(x => x.Name == "data-episode_id").Value);
+
+                if (!seasons.ContainsKey(seasonId))
+                {
+                    seasons.Add(seasonId, new List<int>() { episodeId } );
+                }
+                else
+                {
+                    seasons[seasonId].Add(episodeId);
+                }
+            }
+
+            return seasons.Select(x => new Season { Id = x.Key, Episodes = x.Value.ToArray() }).ToArray();            
         }
 
         /// <summary>
@@ -153,9 +194,13 @@ namespace HDRezka.Helpers
 
             if (mediaType == MediaType.Series)
             {
-                media.Season = 1;
+                var episodeSeriesRegex = new Regex(EPISODE_SERIES_REGEXP);
 
-                media.Episode = 1;
+                var episodeSeriesMatchs = episodeSeriesRegex.Match(jsText);
+
+                media.CurrentSeason = Convert.ToInt32(episodeSeriesMatchs.Groups[1].Value);
+
+                media.CurrentEpisode = Convert.ToInt32(episodeSeriesMatchs.Groups[2].Value);
             }
 
             return media;

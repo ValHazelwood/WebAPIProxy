@@ -6,6 +6,7 @@ using HDRezka.Helpers;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Linq;
+using HDRezka.Types;
 
 namespace HDRezka.Controllers
 {
@@ -36,6 +37,14 @@ namespace HDRezka.Controllers
             var translations = RezkaParser.GetTranslations(htmlDocument);
 
             media.Translations = media.Translations.Union(translations.Where(x => x.Id != media.CurrentTranslationId)).ToArray();
+
+            if (media.Type == MediaType.Series)
+            {
+                var seriesJsText = await _rezkaFetch.GetCDNSeries(new CDNSeriesRequest { Id = media.Id, TranslationId = media.CurrentTranslationId },
+                    SeriesActionType.GetEpisodes);
+
+                media.Translations[0].Seasons = RezkaParser.GetSeasons(seriesJsText);
+            }
 
             return media;
         }
