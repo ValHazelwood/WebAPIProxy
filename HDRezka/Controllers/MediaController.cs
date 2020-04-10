@@ -40,8 +40,7 @@ namespace HDRezka.Controllers
 
             if (media.Type == MediaType.Series)
             {
-                var seriesJsText = await _rezkaFetch.GetCDNSeries(new CDNSeriesRequest { Id = media.Id, TranslationId = media.CurrentTranslationId },
-                    SeriesActionType.GetEpisodes);
+                var seriesJsText = await _rezkaFetch.GetCDNSeries(new EpisodesRequest { Id = media.Id, TranslationId = media.CurrentTranslationId });
 
                 media.Translations[0].Seasons = RezkaParser.GetSeasons(seriesJsText);
             }
