@@ -91,7 +91,7 @@ namespace HDRezka.Helpers
         /// </summary>
         /// <param name="jsText"></param>
         /// <returns></returns>
-        public static Season[] GetSeasons(string jsText)
+        public static SeasonsData GetSeasons(string jsText)
         {
             var jObject = JObject.Parse(jsText);
 
@@ -105,11 +105,24 @@ namespace HDRezka.Helpers
 
             var seasons = new Dictionary<int, List<int>>();
 
+            var seasonsData = new SeasonsData();
+
             foreach (var item in episodesList)
             {
                 var seasonId = Convert.ToInt32(item.Attributes.Single(x => x.Name == "data-season_id").Value);
 
                 var episodeId = Convert.ToInt32(item.Attributes.Single(x => x.Name == "data-episode_id").Value);
+
+                var cdnUrl = item.Attributes.Single(x => x.Name == "data-cdn_url").Value;
+
+                if (!string.IsNullOrEmpty(cdnUrl) && cdnUrl != "null")
+                {
+                    seasonsData.CDNStreams = GetCDNStreamsFromDataAttribute(item);
+
+                    seasonsData.CurrentSeason = seasonId;
+
+                    seasonsData.CurrentEpisode = episodeId;
+                }
 
                 if (!seasons.ContainsKey(seasonId))
                 {
@@ -121,7 +134,9 @@ namespace HDRezka.Helpers
                 }
             }
 
-            return seasons.Select(x => new Season { Id = x.Key, Episodes = x.Value.ToArray() }).ToArray();            
+            seasonsData.Seasons = seasons.Select(x => new Season { Id = x.Key, Episodes = x.Value.ToArray() }).ToArray();
+            
+            return seasonsData;
         }
 
         /// <summary>

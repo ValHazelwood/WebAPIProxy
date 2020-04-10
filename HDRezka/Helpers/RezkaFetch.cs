@@ -72,7 +72,7 @@ namespace HDRezka.Helpers
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<string> GetCDNSeries(EpisodesRequest request)
+        public async Task<string> GetCDNSeries(SeasonsRequest request)
         {
             var timestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
@@ -89,7 +89,7 @@ namespace HDRezka.Helpers
             return result;
         }
 
-        private static HttpContent GetHttpContent(EpisodesRequest request)
+        private static HttpContent GetHttpContent(SeasonsRequest request)
         {
             string actionType = SeriesActionType.GetEpisodes;
 

@@ -10,19 +10,19 @@ namespace HDRezka.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EpisodesController : ControllerBase
+    public class SeasonsController : ControllerBase
     {
-        private readonly ILogger<EpisodesController> _logger;
+        private readonly ILogger<SeasonsController> _logger;
         private readonly RezkaFetch _rezkaFetch;
 
-        public EpisodesController(ILogger<EpisodesController> logger, IHttpClientFactory clientFactory)
+        public SeasonsController(ILogger<SeasonsController> logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
             _rezkaFetch = new RezkaFetch(clientFactory);
         }
 
         [HttpPost]
-        public async Task<IEnumerable<Season>> Post(EpisodesRequest request)
+        public async Task<SeasonsData> Post(SeasonsRequest request)
         {
             var response = await _rezkaFetch.GetCDNSeries(request);
 

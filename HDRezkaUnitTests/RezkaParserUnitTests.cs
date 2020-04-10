@@ -136,13 +136,19 @@ namespace HDRezkaUnitTests
 
             var result = RezkaParser.GetSeasons(mockInput);
 
-            Assert.AreEqual(3, result.Length);
+            Assert.AreEqual(3, result.Seasons.Length);
 
-            Assert.AreEqual(10, result.Single(x => x.Id == 1).Episodes.Length);
+            Assert.AreEqual(10, result.Seasons.Single(x => x.Id == 1).Episodes.Length);
 
-            Assert.AreEqual(10, result.Single(x => x.Id == 2).Episodes.Length);
+            Assert.AreEqual(10, result.Seasons.Single(x => x.Id == 2).Episodes.Length);
 
-            Assert.AreEqual(4, result.Single(x => x.Id == 3).Episodes.Length);
+            Assert.AreEqual(4, result.Seasons.Single(x => x.Id == 3).Episodes.Length);
+
+            Assert.AreEqual(1, result.CurrentSeason);
+
+            Assert.AreEqual(1, result.CurrentEpisode);
+
+            Assert.IsTrue(result.CDNStreams.Length > 0);
         }
     }
 }
