@@ -5,6 +5,7 @@ import SearchList from "./SearchList";
 import MediaInfo from "./MediaInfo";
 import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
+import FetchService from "../store/FetchService";
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -49,6 +50,8 @@ function App() {
     dispatch({
       type: "SEARCH_REQUEST",
     });
+
+    FetchService.search(input);
 
     setTimeout(() => {
       dispatch({

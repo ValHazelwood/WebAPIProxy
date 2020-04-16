@@ -33,7 +33,7 @@ namespace HDRezka
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddHttpClient("rezka", c => 
+            services.AddHttpClient("rezka", c =>
             {
                 c.BaseAddress = new Uri("https://rezka.ag");
                 c.DefaultRequestHeaders.Accept.Clear();
@@ -67,7 +67,7 @@ namespace HDRezka
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
