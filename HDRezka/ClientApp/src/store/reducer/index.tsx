@@ -1,20 +1,11 @@
+import { SearchResult, Media } from "../types";
+
 type ApplicationState = {
   loading: boolean;
   results: SearchResult[];
   errorMessage: string;
   mediaMode: boolean;
   media?: Media;
-};
-
-type Media = {
-  id: number;
-};
-
-type SearchResult = {
-  name: string;
-  text: string;
-  rating: string;
-  url: string;
 };
 
 type Action =

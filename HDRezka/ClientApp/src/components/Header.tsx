@@ -7,7 +7,7 @@ type HeaderProps = {
 const Header = ({ title }: HeaderProps) => {
   console.log("Header rendered");
   return (
-    <header className="App-header">
+    <header className="header">
       <h2>{title}</h2>
     </header>
   );

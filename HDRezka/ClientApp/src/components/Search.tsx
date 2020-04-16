@@ -1,37 +1,37 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 
 type SearchProps = {
   searchHandler: (input: string) => void;
 };
 
 const Search = ({ searchHandler }: SearchProps) => {
-  const [searchValue, setSearchValue] = useState("");
 
-  const handleSearchInputChanges = (e: any) => {
-    setSearchValue(e.target.value);
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const resetInputField = () => {
-    setSearchValue("");
+  const setSearchValue = (input: string) => {
+    if (inputRef.current) {
+      inputRef.current.value = input;
+    }
   };
 
   const callSearchFunction = (e: any) => {
     e.preventDefault();
-    searchHandler(searchValue);
-    resetInputField();
+    if (inputRef.current) {
+      searchHandler(inputRef.current.value);
+      setSearchValue("");
+    }
   };
 
   console.log("Search rendered");
 
   return (
-    <form className="search">
-      <input
-        value={searchValue}
-        onChange={handleSearchInputChanges}
-        type="text"
-      />
-      <input onClick={callSearchFunction} type="submit" value="SEARCH" />
-    </form>
+    <header className="App-header">
+      <form className="search">
+        <input ref={inputRef} onChange={(e) => setSearchValue(e.target.value)} type="text"
+        />
+        <input onClick={callSearchFunction} type="submit" value="SEARCH" />
+      </form>
+    </header>
   );
 };
 

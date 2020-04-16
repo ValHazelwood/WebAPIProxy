@@ -1,7 +1,8 @@
-import React, { useReducer, useEffect } from "react";
+import React, { useReducer } from "react";
 import "../App.css";
-import Header from "./Header";
 import Search from "./Search";
+import SearchList from "./SearchList";
+import MediaInfo from "./MediaInfo";
 import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
 
@@ -44,7 +45,7 @@ function App() {
   ];
 
   let search = (input: string) => {
-    console.log("search:" + input);
+    console.log("search: " + input);
     dispatch({
       type: "SEARCH_REQUEST",
     });
@@ -55,60 +56,43 @@ function App() {
         results: testResults,
       });
     }, 2000);
+  };
 
-    setTimeout(() => {
-      dispatch({
-        type: "MEDIA_REQUEST",
-      });
-    }, 4000);
+  let selectHandler = (text: string, url: string) => {
+
+    console.log("selected: " + text);
+
+    dispatch({
+      type: "MEDIA_REQUEST",
+    });
 
     setTimeout(() => {
       dispatch({
         type: "MEDIA_SUCCESS",
-        media: { id: 123 },
+        media: { id: 0, text: text, url: url },
       });
-    }, 6000);
+    }, 2000);
+
   };
 
   const { loading, results, errorMessage, mediaMode, media } = state;
 
-  const displayMedia = () => {
-    if (media)
-      return (
-        <React.Fragment>
-          <h1>Media info</h1>
-          <pre>{media.id}</pre>
-        </React.Fragment>
-      );
-  };
+  let displayResults;
 
-  const displaySearch = () => {
-    if (results.length) {
-      let output = results.map((item, index) => (
-        <p key={index}>
-          {item.name} {item.text} {item.rating} {item.url}
-        </p>
-      ));
-
-      return <React.Fragment>
-        <h1>Search results</h1>
-        {output}
-      </React.Fragment>
-    }
-  };
-
-  const displayResults =
-    loading && !errorMessage ? (
-      <img className="spinner" src={spinner} alt="Loading..." />
-    ) : errorMessage ? (
-      <div className="errorMessage">{errorMessage}</div>
-    ) : (mediaMode ? (<div className="media" >{displayMedia()}</div>) : (<div className="results">{displaySearch()}</div>));
+  if (loading && !errorMessage) {
+    displayResults = <img className="spinner" src={spinner} alt="Loading..." />;
+  } else if (errorMessage) {
+    displayResults = <div className="errorMessage">{errorMessage}</div>;
+  } else if (mediaMode) {
+    displayResults = <MediaInfo selectedMedia={media} />;
+  } else if (!mediaMode) {
+    displayResults = <SearchList results={results} selectHandler={selectHandler} />;
+  }
 
   console.log("App rendered");
 
   return (
     <div className="App">
-      <Header title="Test" />
       <Search searchHandler={search} />
       {displayResults}
     </div>
