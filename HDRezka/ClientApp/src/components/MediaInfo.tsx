@@ -3,26 +3,22 @@ import { MediaData } from "../store/types";
 import Header from "./Header";
 
 interface MediaTypes {
-    selectedMedia: MediaData | undefined
+    data: MediaData | undefined
 }
 
-const MediaInfo = ({ selectedMedia }: MediaTypes) => {
+const MediaInfo = ({ data }: MediaTypes) => {
 
-    let title: string;
-    let output;
-
-    if (selectedMedia && selectedMedia.searchResult) {
-        title = selectedMedia.searchResult.name;
-
-        output = <video controls><source src={selectedMedia.media.translations[0].cdnStreams[3].urL2} type="video/mp4" /></video>;
-
-    } else {
-        title = "No media information";
+    console.log(data);
+    if (data && data.searchResult) {
+        return (<React.Fragment><Header title={data.searchResult.name} />
+            <div className="mediaInfo">
+                <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating}</p>
+                <video controls> <source src={data.media.translations[0].cdnStreams[3].urL2} type="video/mp4" /></video>
+            </div>
+        </React.Fragment>);
     }
 
-    console.log(selectedMedia);
-
-    return (<React.Fragment><Header title={title} />{output}</React.Fragment>);
+    return (<React.Fragment><Header title="No media information" /></React.Fragment>);
 };
 
 export default MediaInfo;

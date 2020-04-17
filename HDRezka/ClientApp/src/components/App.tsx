@@ -73,7 +73,7 @@ function App() {
   } else if (errorMessage) {
     displayResults = <div className="errorMessage">{errorMessage}</div>;
   } else if (mediaMode) {
-    displayResults = <MediaInfo selectedMedia={media} />;
+    displayResults = <MediaInfo data={media} />;
   } else if (!mediaMode) {
     displayResults = <SearchList results={results} selectHandler={selectHandler} />;
   }
