@@ -1,18 +1,18 @@
-import { SearchResult, Media } from "../types";
+import { SearchResult, MediaData } from "../types";
 
 type ApplicationState = {
   loading: boolean;
   results: SearchResult[];
   errorMessage: string;
   mediaMode: boolean;
-  media?: Media;
+  media?: MediaData;
 };
 
 type Action =
   | { type: "SEARCH_REQUEST" }
   | { type: "MEDIA_REQUEST" }
   | { type: "SEARCH_SUCCESS"; results: SearchResult[] }
-  | { type: "MEDIA_SUCCESS"; media: Media }
+  | { type: "MEDIA_SUCCESS"; media: MediaData }
   | { type: "SEARCH_FAILURE"; error: string }
   | { type: "MEDIA_FAILURE"; error: string };
 

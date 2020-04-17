@@ -6,44 +6,13 @@ import MediaInfo from "./MediaInfo";
 import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
 import FetchService from "../store/FetchService";
+import { SearchResult, Media } from "../store/types";
 
 function App() {
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  let testResults = [
-    {
-      name: "Терминатор: Да придёт спаситель",
-      text: " (Terminator Salvation, 2009)",
-      rating: "6.77",
-      url: "file://terminator-da-pridet-spasitel-2009.html",
-    },
-    {
-      name: "Терминатор: Генезис",
-      text: " (Terminator: Genisys, 2015)",
-      rating: "6.46",
-      url: "file://terminator-genezis.html",
-    },
-    {
-      name: "Терминатор",
-      text: " (The Terminator, 1984)",
-      rating: "7.97",
-      url: "file://terminator-1984.html",
-    },
-    {
-      name: "Терминатор 2: Судный день",
-      text: " (Terminator 2: Judgment Day, 1991)",
-      rating: "8.31",
-      url:
-        "file://terminator-2-sudnyy-den-1991.html",
-    },
-    {
-      name: "Терминатор 3: Восстание машин",
-      text: " (Terminator 3: Rise of the Machines, 2003)",
-      rating: "6.78",
-      url:
-        "file://terminator-3-vosstanie-mashin-2003.html",
-    },
-  ];
+  const { loading, results, errorMessage, mediaMode, media } = state;
 
   let search = (input: string) => {
     console.log("search: " + input);
@@ -51,34 +20,51 @@ function App() {
       type: "SEARCH_REQUEST",
     });
 
-    FetchService.search(input);
-
-    setTimeout(() => {
-      dispatch({
-        type: "SEARCH_SUCCESS",
-        results: testResults,
+    FetchService.search(input)
+      .then((response) => response.json() as Promise<SearchResult[]>)
+      .then((result) => {
+        dispatch({
+          type: "SEARCH_SUCCESS",
+          results: result,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: "SEARCH_FAILURE",
+          error: error,
+        });
       });
-    }, 2000);
   };
 
-  let selectHandler = (text: string, url: string) => {
+  let selectHandler = (selectedItemUrl: string) => {
 
-    console.log("selected: " + text);
+    let selectedItem = results.find(x => x.url === selectedItemUrl);
 
-    dispatch({
-      type: "MEDIA_REQUEST",
-    });
-
-    setTimeout(() => {
+    if (selectedItem) {
       dispatch({
-        type: "MEDIA_SUCCESS",
-        media: { id: 0, text: text, url: url },
+        type: "MEDIA_REQUEST",
       });
-    }, 2000);
+
+      FetchService.media(selectedItemUrl)
+        .then((response) => response.json() as Promise<Media>)
+        .then((result) => {
+          dispatch({
+            type: "MEDIA_SUCCESS",
+            media: {
+              searchResult: selectedItem,
+              media: result
+            },
+          });
+        })
+        .catch((error) => {
+          dispatch({
+            type: "MEDIA_FAILURE",
+            error: error,
+          });
+        });
+    }
 
   };
-
-  const { loading, results, errorMessage, mediaMode, media } = state;
 
   let displayResults;
 

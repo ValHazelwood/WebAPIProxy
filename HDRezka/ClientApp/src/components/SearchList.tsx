@@ -4,7 +4,7 @@ import Header from "./Header";
 
 interface SearchListType {
     results: SearchResult[];
-    selectHandler: (text: string, url: string) => void;
+    selectHandler: (selectedItemUrl: string) => void;
 }
 
 const SearchList = ({ results, selectHandler }: SearchListType) => {
@@ -14,9 +14,7 @@ const SearchList = ({ results, selectHandler }: SearchListType) => {
 
     const onClickHandler = (e: any) => {
         e.preventDefault();
-        console.log(e.currentTarget.text);
-        console.log(e.currentTarget.href);
-        selectHandler(e.currentTarget.text, e.currentTarget.href);
+        selectHandler(e.currentTarget.href);
     };
 
     if (results.length) {
