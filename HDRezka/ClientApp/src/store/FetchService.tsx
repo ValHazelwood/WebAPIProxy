@@ -1,36 +1,20 @@
 
+const API_URL: string = "http://192.168.1.252:5000/api/";
+
 const FetchService = {
-  search: function (input: string) {
+  post: function (url: string, requestBody: string) {
     let myHeaders = new Headers();
 
     myHeaders.append("Content-Type", "application/json");
 
-    var raw = JSON.stringify(input);
-
     var requestOptions: any = {
       method: "POST",
       headers: myHeaders,
-      body: raw,
+      body: requestBody,
       redirect: "follow",
     };
 
-    return fetch("http://192.168.1.252:5000/api/search", requestOptions);
-  },
-  media: function (input: string) {
-    let myHeaders = new Headers();
-
-    myHeaders.append("Content-Type", "application/json");
-
-    var raw = JSON.stringify(input);
-
-    var requestOptions: any = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-
-    return fetch("http://192.168.1.252:5000/api/media", requestOptions);
+    return fetch(API_URL + url, requestOptions);
   }
 };
 

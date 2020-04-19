@@ -20,7 +20,7 @@ function App() {
       type: "SEARCH_REQUEST",
     });
 
-    FetchService.search(input)
+    FetchService.post("search", JSON.stringify(input))
       .then((response) => response.json() as Promise<SearchResult[]>)
       .then((result) => {
         dispatch({
@@ -45,7 +45,7 @@ function App() {
         type: "MEDIA_REQUEST",
       });
 
-      FetchService.media(selectedItemUrl)
+      FetchService.post("media", JSON.stringify(selectedItemUrl))
         .then((response) => response.json() as Promise<Media>)
         .then((result) => {
           dispatch({
