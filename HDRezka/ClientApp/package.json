@@ -13,6 +13,7 @@
     "@types/video.js": "^7.3.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-dropdown": "^1.7.0",
     "react-scripts": "3.4.1",
     "reinspect": "^1.1.0",
     "typescript": "^3.7.5",

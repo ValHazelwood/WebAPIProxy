@@ -35,3 +35,8 @@
     transform: rotate(360deg);
   }
 }
+
+.translationSelect,
+.qualitySelect {
+  display: inline-flex;
+}
