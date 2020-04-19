@@ -5,7 +5,7 @@ type ApplicationState = {
   results: SearchResult[];
   errorMessage: string;
   mediaMode: boolean;
-  media?: MediaData;
+  mediaData?: MediaData;
 };
 
 type Action =
@@ -39,7 +39,7 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
     case "MEDIA_REQUEST":
       return { ...state, loading: true };
     case "MEDIA_SUCCESS":
-      return { ...state, loading: false, mediaMode: true, media: action.media };
+      return { ...state, loading: false, mediaMode: true, mediaData: action.media };
     case "MEDIA_FAILURE":
       return { ...state, loading: false, errorMessage: action.error };
     default:

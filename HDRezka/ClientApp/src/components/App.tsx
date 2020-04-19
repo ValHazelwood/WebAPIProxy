@@ -2,17 +2,17 @@ import React, { useReducer } from "react";
 import "../App.css";
 import Search from "./Search";
 import SearchList from "./SearchList";
-import MediaInfo from "./MediaInfo";
 import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
 import FetchService from "../store/FetchService";
 import { SearchResult, Media } from "../store/types";
+import Movie from "./Movie";
 
 function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { loading, results, errorMessage, mediaMode, media } = state;
+  const { loading, results, errorMessage, mediaMode, mediaData } = state;
 
   let search = (input: string) => {
     console.log("search: " + input);
@@ -48,13 +48,16 @@ function App() {
       FetchService.post("media", JSON.stringify(selectedItemUrl))
         .then((response) => response.json() as Promise<Media>)
         .then((result) => {
-          dispatch({
-            type: "MEDIA_SUCCESS",
-            media: {
-              searchResult: selectedItem,
-              media: result
-            },
-          });
+          if (selectedItem) {
+            dispatch({
+              type: "MEDIA_SUCCESS",
+              media: {
+                searchResult: selectedItem,
+                media: result
+              },
+            });
+          }
+
         })
         .catch((error) => {
           dispatch({
@@ -72,8 +75,8 @@ function App() {
     displayResults = <img className="spinner" src={spinner} alt="Loading..." />;
   } else if (errorMessage) {
     displayResults = <div className="errorMessage">{errorMessage}</div>;
-  } else if (mediaMode) {
-    displayResults = <MediaInfo data={media} />;
+  } else if (mediaMode && mediaData?.media.type === 0) {
+    displayResults = <Movie data={mediaData} />;
   } else if (!mediaMode) {
     displayResults = <SearchList results={results} selectHandler={selectHandler} />;
   }
