@@ -4,8 +4,7 @@ import Search from "./Search";
 import SearchList from "./SearchList";
 import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
-import FetchService from "../store/FetchService";
-import { SearchResult, Media } from "../store/types";
+import ActionService from "../store/ActionService";
 import Movie from "./Movie";
 
 function App() {
@@ -15,58 +14,11 @@ function App() {
   const { loading, results, errorMessage, mediaMode, mediaData } = state;
 
   let search = (input: string) => {
-    console.log("search: " + input);
-    dispatch({
-      type: "SEARCH_REQUEST",
-    });
-
-    FetchService.post("search", JSON.stringify(input))
-      .then((response) => response.json() as Promise<SearchResult[]>)
-      .then((result) => {
-        dispatch({
-          type: "SEARCH_SUCCESS",
-          results: result,
-        });
-      })
-      .catch((error) => {
-        dispatch({
-          type: "SEARCH_FAILURE",
-          error: error,
-        });
-      });
+    ActionService.search(input, dispatch);
   };
 
   let selectHandler = (selectedItemUrl: string) => {
-
-    let selectedItem = results.find(x => x.url === selectedItemUrl);
-
-    if (selectedItem) {
-      dispatch({
-        type: "MEDIA_REQUEST",
-      });
-
-      FetchService.post("media", JSON.stringify(selectedItemUrl))
-        .then((response) => response.json() as Promise<Media>)
-        .then((result) => {
-          if (selectedItem) {
-            dispatch({
-              type: "MEDIA_SUCCESS",
-              media: {
-                searchResult: selectedItem,
-                media: result
-              },
-            });
-          }
-
-        })
-        .catch((error) => {
-          dispatch({
-            type: "MEDIA_FAILURE",
-            error: error,
-          });
-        });
-    }
-
+    ActionService.selectHandler(selectedItemUrl, results, dispatch);
   };
 
   let displayResults;
