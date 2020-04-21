@@ -1,5 +1,11 @@
 import FetchService from "./FetchService";
-import { SearchResult, Media } from "./types";
+import {
+  SearchResult,
+  Media,
+  MediaData,
+  SeasonData,
+  Translation,
+} from "./types";
 
 const ActionService = {
   search: function (input: string, dispatch: React.Dispatch<any>) {
@@ -23,7 +29,7 @@ const ActionService = {
         });
       });
   },
-  selectHandler: function (
+  selectSearchResultHandler: function (
     selectedItemUrl: string,
     results: SearchResult[],
     dispatch: React.Dispatch<any>
@@ -55,6 +61,52 @@ const ActionService = {
           });
         });
     }
+  },
+  selectSeriesTranslationHandler: function (
+    id: number,
+    translationId: number,
+    mediaData: MediaData,
+    dispatch: React.Dispatch<any>
+  ) {
+    FetchService.post(
+      "seasons",
+      `{ "id":${id}, "translationId":${translationId} }`
+    )
+      .then((response) => response.json() as Promise<SeasonData>)
+      .then((result) => {
+        let translationName = mediaData.media.translations.find(
+          (x) => x.id === translationId
+        )?.name;
+        let translations: Translation[] = [
+          ...mediaData.media.translations.filter((x) => x.id !== translationId),
+          {
+            id: translationId,
+            name: translationName ? translationName : "Default",
+            seasons: result.seasons,
+            cdnStreams: result.cdnStreams,
+          },
+        ];
+
+        let media: Media = {
+          id: id,
+          currentTranslationId: translationId,
+          type: 1,
+          currentSeason: result.currentSeason,
+          currentEpisode: result.currentEpisode,
+          translations: translations,
+        };
+
+        dispatch({
+          type: "MEDIA_SUCCESS",
+          media: { searchResult: mediaData.searchResult, media: media },
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: "MEDIA_FAILURE",
+          error: error,
+        });
+      });
   },
 };
 

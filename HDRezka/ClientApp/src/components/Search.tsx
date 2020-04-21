@@ -8,17 +8,10 @@ const Search = ({ searchHandler }: SearchProps) => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const setSearchValue = (input: string) => {
-    if (inputRef.current) {
-      inputRef.current.value = input;
-    }
-  };
-
   const callSearchFunction = (e: any) => {
     e.preventDefault();
-    if (inputRef.current) {
+    if (inputRef.current && inputRef.current.value.length > 0) {
       searchHandler(inputRef.current.value);
-      setSearchValue("");
     }
   };
 
@@ -27,7 +20,7 @@ const Search = ({ searchHandler }: SearchProps) => {
   return (
     <header className="App-header">
       <form className="search">
-        <input ref={inputRef} onChange={(e) => setSearchValue(e.target.value)} type="text"
+        <input ref={inputRef} type="text"
         />
         <input onClick={callSearchFunction} type="submit" value="SEARCH" />
       </form>

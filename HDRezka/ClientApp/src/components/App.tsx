@@ -6,6 +6,7 @@ import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
 import ActionService from "../store/ActionService";
 import Movie from "./Movie";
+import Series from "./Series";
 
 function App() {
 
@@ -17,8 +18,14 @@ function App() {
     ActionService.search(input, dispatch);
   };
 
-  let selectHandler = (selectedItemUrl: string) => {
-    ActionService.selectHandler(selectedItemUrl, results, dispatch);
+  let selectSearchResultHandler = (selectedItemUrl: string) => {
+    ActionService.selectSearchResultHandler(selectedItemUrl, results, dispatch);
+  };
+
+  let selectSeriesTranslationHandler = (id: number, translationId: number) => {
+    if (mediaData) {
+      ActionService.selectSeriesTranslationHandler(id, translationId, mediaData, dispatch);
+    }
   };
 
   let displayResults;
@@ -29,8 +36,10 @@ function App() {
     displayResults = <div className="errorMessage">{errorMessage}</div>;
   } else if (mediaMode && mediaData?.media.type === 0) {
     displayResults = <Movie data={mediaData} />;
+  } else if (mediaMode && mediaData?.media.type === 1) {
+    displayResults = <Series data={mediaData} selectSeriesTranslation={selectSeriesTranslationHandler} />;
   } else if (!mediaMode) {
-    displayResults = <SearchList results={results} selectHandler={selectHandler} />;
+    displayResults = <SearchList results={results} selectHandler={selectSearchResultHandler} />;
   }
 
   console.log("App rendered");

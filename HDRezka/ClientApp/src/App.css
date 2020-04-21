@@ -37,6 +37,8 @@
 }
 
 .translationSelect,
-.qualitySelect {
+.qualitySelect,
+.seasonSelect,
+.episodeSelect {
   display: inline-flex;
 }

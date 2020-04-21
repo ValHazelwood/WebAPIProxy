@@ -4,11 +4,11 @@ import Header from "./Header";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
-interface MediaTypes {
+interface MovieProps {
     data: MediaData
 }
 
-const Movie = ({ data }: MediaTypes) => {
+const Movie = ({ data }: MovieProps) => {
 
     const [currentTranslationId, setCurrentTranslationId] = useState<number>(data.media.currentTranslationId);
 

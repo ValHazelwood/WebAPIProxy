@@ -32,6 +32,13 @@ export type Media = {
   translations: Translation[];
 };
 
+export type SeasonData = {
+  currentSeason: number;
+  currentEpisode: number;
+  seasons: Season[];
+  cdnStreams: Stream[];
+};
+
 export type MediaData = {
   searchResult: SearchResult;
   media: Media;
