@@ -5,6 +5,7 @@ import {
   MediaData,
   SeasonData,
   Translation,
+  Stream,
 } from "./types";
 
 const ActionService = {
@@ -68,6 +69,10 @@ const ActionService = {
     mediaData: MediaData,
     dispatch: React.Dispatch<any>
   ) {
+    dispatch({
+      type: "MEDIA_REQUEST",
+    });
+
     FetchService.post(
       "seasons",
       `{ "id":${id}, "translationId":${translationId} }`
@@ -93,6 +98,58 @@ const ActionService = {
           type: 1,
           currentSeason: result.currentSeason,
           currentEpisode: result.currentEpisode,
+          translations: translations,
+        };
+
+        dispatch({
+          type: "MEDIA_SUCCESS",
+          media: { searchResult: mediaData.searchResult, media: media },
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: "MEDIA_FAILURE",
+          error: error,
+        });
+      });
+  },
+  selectSeriesEpisodeHandler: function (
+    id: number,
+    translationId: number,
+    season: number,
+    episode: number,
+    mediaData: MediaData,
+    dispatch: React.Dispatch<any>
+  ) {
+    dispatch({
+      type: "MEDIA_REQUEST",
+    });
+
+    FetchService.post(
+      "series",
+      `{ "id":${id}, "translationId":${translationId}, "season":${season}, "episode":${episode} }`
+    )
+      .then((response) => response.json() as Promise<Stream[]>)
+      .then((result) => {
+        let translation = mediaData.media.translations.find(
+          (x) => x.id === translationId
+        );
+
+        let translations: Translation[] = mediaData.media.translations.filter(
+          (x) => x.id !== translationId
+        );
+
+        if (translation) {
+          translation.cdnStreams = result;
+          translations.push(translation);
+        }
+
+        let media: Media = {
+          id: id,
+          currentTranslationId: translationId,
+          type: 1,
+          currentSeason: season,
+          currentEpisode: episode,
           translations: translations,
         };
 

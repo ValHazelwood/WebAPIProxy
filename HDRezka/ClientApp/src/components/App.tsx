@@ -28,6 +28,12 @@ function App() {
     }
   };
 
+  let selectSeriesEpisodeHandler = (id: number, translationId: number, season: number, episode: number) => {
+    if (mediaData) {
+      ActionService.selectSeriesEpisodeHandler(id, translationId, season, episode, mediaData, dispatch);
+    }
+  };
+
   let displayResults;
 
   if (loading && !errorMessage) {
@@ -37,7 +43,7 @@ function App() {
   } else if (mediaMode && mediaData?.media.type === 0) {
     displayResults = <Movie data={mediaData} />;
   } else if (mediaMode && mediaData?.media.type === 1) {
-    displayResults = <Series data={mediaData} selectSeriesTranslation={selectSeriesTranslationHandler} />;
+    displayResults = <Series data={mediaData} selectSeriesTranslation={selectSeriesTranslationHandler} selectSeriesEpisode={selectSeriesEpisodeHandler} />;
   } else if (!mediaMode) {
     displayResults = <SearchList results={results} selectHandler={selectSearchResultHandler} />;
   }
