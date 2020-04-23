@@ -2,17 +2,18 @@ import React, { useReducer } from "react";
 import "../App.css";
 import Search from "./Search";
 import SearchList from "./SearchList";
-import spinner from "../ajax-loader.gif";
 import { initialState, reducer } from "../store/reducer";
 import ActionService from "../store/ActionService";
 import Movie from "./Movie";
 import Series from "./Series";
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { loading, results, errorMessage, mediaMode, mediaData } = state;
+  const { loading, seriesLoading, results, errorMessage, mediaMode, mediaData } = state;
 
   let search = (input: string) => {
     ActionService.search(input, dispatch);
@@ -37,13 +38,13 @@ function App() {
   let displayResults;
 
   if (loading && !errorMessage) {
-    displayResults = <img className="spinner" src={spinner} alt="Loading..." />;
+    displayResults = <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />;
   } else if (errorMessage) {
     displayResults = <div className="errorMessage">{errorMessage}</div>;
   } else if (mediaMode && mediaData?.media.type === 0) {
     displayResults = <Movie data={mediaData} />;
   } else if (mediaMode && mediaData?.media.type === 1) {
-    displayResults = <Series data={mediaData} selectSeriesTranslation={selectSeriesTranslationHandler} selectSeriesEpisode={selectSeriesEpisodeHandler} />;
+    displayResults = <Series loading={seriesLoading} data={mediaData} selectSeriesTranslation={selectSeriesTranslationHandler} selectSeriesEpisode={selectSeriesEpisodeHandler} />;
   } else if (!mediaMode) {
     displayResults = <SearchList results={results} selectHandler={selectSearchResultHandler} />;
   }

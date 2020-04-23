@@ -70,7 +70,7 @@ const ActionService = {
     dispatch: React.Dispatch<any>
   ) {
     dispatch({
-      type: "MEDIA_REQUEST",
+      type: "SERIES_REQUEST",
     });
 
     FetchService.post(
@@ -102,13 +102,13 @@ const ActionService = {
         };
 
         dispatch({
-          type: "MEDIA_SUCCESS",
+          type: "SERIES_SUCCESS",
           media: { searchResult: mediaData.searchResult, media: media },
         });
       })
       .catch((error) => {
         dispatch({
-          type: "MEDIA_FAILURE",
+          type: "SERIES_FAILURE",
           error: error,
         });
       });
@@ -122,7 +122,7 @@ const ActionService = {
     dispatch: React.Dispatch<any>
   ) {
     dispatch({
-      type: "MEDIA_REQUEST",
+      type: "SERIES_REQUEST",
     });
 
     FetchService.post(
@@ -154,13 +154,13 @@ const ActionService = {
         };
 
         dispatch({
-          type: "MEDIA_SUCCESS",
+          type: "SERIES_SUCCESS",
           media: { searchResult: mediaData.searchResult, media: media },
         });
       })
       .catch((error) => {
         dispatch({
-          type: "MEDIA_FAILURE",
+          type: "SERIES_FAILURE",
           error: error,
         });
       });

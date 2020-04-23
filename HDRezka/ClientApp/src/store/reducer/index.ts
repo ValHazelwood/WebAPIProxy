@@ -2,6 +2,7 @@ import { SearchResult, MediaData } from "../types";
 
 type ApplicationState = {
   loading: boolean;
+  seriesLoading: boolean;
   results: SearchResult[];
   errorMessage: string;
   mediaMode: boolean;
@@ -11,13 +12,17 @@ type ApplicationState = {
 type Action =
   | { type: "SEARCH_REQUEST" }
   | { type: "MEDIA_REQUEST" }
+  | { type: "SERIES_REQUEST" }
   | { type: "SEARCH_SUCCESS"; results: SearchResult[] }
   | { type: "MEDIA_SUCCESS"; media: MediaData }
+  | { type: "SERIES_SUCCESS"; media: MediaData }
   | { type: "SEARCH_FAILURE"; error: string }
-  | { type: "MEDIA_FAILURE"; error: string };
+  | { type: "MEDIA_FAILURE"; error: string }
+  | { type: "SERIES_FAILURE"; error: string };
 
 const initialState: ApplicationState = {
   loading: false,
+  seriesLoading: false,
   results: [],
   errorMessage: "",
   mediaMode: false,
@@ -48,6 +53,17 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       };
     case "MEDIA_FAILURE":
       return { ...state, loading: false, errorMessage: action.error };
+    case "SERIES_REQUEST":
+      return { ...state, seriesLoading: true };
+    case "SERIES_SUCCESS":
+      return {
+        ...state,
+        seriesLoading: false,
+        mediaMode: true,
+        mediaData: action.media,
+      };
+    case "SERIES_FAILURE":
+      return { ...state, seriesLoading: false, errorMessage: action.error };
     default:
       return state;
   }

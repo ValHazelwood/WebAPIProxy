@@ -3,16 +3,28 @@ import { MediaData } from "../store/types";
 import Header from "./Header";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 interface SeriesProps {
     data: MediaData;
     selectSeriesTranslation: (id: number, translationId: number) => void;
     selectSeriesEpisode: (id: number, translationId: number, season: number, episode: number) => void;
+    loading: boolean;
 }
 
-const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode }: SeriesProps) => {
+const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }: SeriesProps) => {
 
     const [currentQualityId, setCurrentQualityId] = useState<string>("480p");
+
+    if (loading) {
+        return <Loader
+            type="TailSpin"
+            color="#00BFFF"
+            height={100}
+            width={100}
+        />
+    }
 
     console.log("Series rendered");
 
