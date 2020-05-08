@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 import { SearchResult } from "../store/types";
 import Header from "./Header";
 
@@ -12,7 +12,7 @@ const SearchList = ({ results, selectHandler }: SearchListType) => {
     let title: string;
     let outputList;
 
-    const onClickHandler = (e: any) => {
+    const onClickHandler = (e: MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         selectHandler(e.currentTarget.href);
     };

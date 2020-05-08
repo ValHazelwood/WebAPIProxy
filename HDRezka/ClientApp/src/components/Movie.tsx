@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MediaData } from "../store/types";
 import Header from "./Header";
-import Dropdown from 'react-dropdown';
+import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 interface MovieProps {
@@ -33,12 +33,12 @@ const Movie = ({ data }: MovieProps) => {
 
         if (stream) {
 
-            const onTranslationSelected = (option: any) => {
+            const onTranslationSelected = (option: Option) => {
 
                 setCurrentTranslationId(parseInt(option.value));
             }
 
-            const onQualitySelected = (option: any) => {
+            const onQualitySelected = (option: Option) => {
 
                 setCurrentQualityId(option.value);
             }

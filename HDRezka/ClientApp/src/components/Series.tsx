@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { MediaData } from "../store/types";
 import Header from "./Header";
-import Dropdown from 'react-dropdown';
+import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
@@ -58,12 +58,12 @@ const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }:
 
             if (stream) {
 
-                const onTranslationSelected = (option: any) => {
+                const onTranslationSelected = (option: Option) => {
 
                     selectSeriesTranslation(data.media.id, parseInt(option.value));
                 }
 
-                const onSeasonSelected = (option: any) => {
+                const onSeasonSelected = (option: Option) => {
 
                     let queryEpisode = translation?.seasons?.find(x => x.id === parseInt(option.value))?.episodes[0];
                     if (queryEpisode) {
@@ -71,14 +71,14 @@ const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }:
                     }
                 }
 
-                const onEpisodeSelected = (option: any) => {
+                const onEpisodeSelected = (option: Option) => {
 
                     if (data.media.currentSeason) {
                         selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(option.value));
                     }
                 }
 
-                const onQualitySelected = (option: any) => {
+                const onQualitySelected = (option: Option) => {
 
                     setCurrentQualityId(option.value);
                 }
