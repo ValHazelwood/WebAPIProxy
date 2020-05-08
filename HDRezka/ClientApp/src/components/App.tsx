@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import "../App.css";
 import Search from "./Search";
 import SearchList from "./SearchList";
@@ -7,11 +7,14 @@ import ActionService from "../store/ActionService";
 import Movie from "./Movie";
 import Series from "./Series";
 import Loader from 'react-loader-spinner';
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import createPersistedReducer from 'use-persisted-reducer';
 
 function App() {
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const usePersistedReducer = createPersistedReducer('state');
+
+  const [state, dispatch] = usePersistedReducer(reducer, initialState);
 
   const { loading, seriesLoading, results, errorMessage, mediaMode, mediaData } = state;
 
