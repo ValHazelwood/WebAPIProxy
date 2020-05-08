@@ -12,7 +12,7 @@ import createPersistedReducer from 'use-persisted-reducer';
 
 function App() {
 
-  const usePersistedReducer = createPersistedReducer('state');
+  const usePersistedReducer = createPersistedReducer('state', localStorage);
 
   const [state, dispatch] = usePersistedReducer(reducer, initialState);
 
