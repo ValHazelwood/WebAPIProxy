@@ -47,6 +47,7 @@ const ActionService = {
         .then((result) => {
           if (selectedItem) {
             result.currentQualityId = "480p";
+            result.currentTime = 0;
             dispatch({
               type: "MEDIA_SUCCESS",
               media: {
