@@ -101,6 +101,7 @@ const ActionService = {
           currentEpisode: result.currentEpisode,
           translations: translations,
           currentQualityId: mediaData.media.currentQualityId,
+          currentTime: 0,
         };
 
         dispatch({
@@ -154,6 +155,7 @@ const ActionService = {
           currentEpisode: episode,
           translations: translations,
           currentQualityId: mediaData.media.currentQualityId,
+          currentTime: 0,
         };
 
         dispatch({
