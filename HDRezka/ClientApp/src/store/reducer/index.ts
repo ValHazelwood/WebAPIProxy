@@ -18,6 +18,7 @@ type Action =
   | { type: "SERIES_SUCCESS"; media: MediaData }
   | { type: "SEARCH_FAILURE"; error: string }
   | { type: "MEDIA_FAILURE"; error: string }
+  | { type: "MEDIA_UPDATE"; media: MediaData }
   | { type: "SERIES_FAILURE"; error: string };
 
 const initialState: ApplicationState = {
@@ -64,6 +65,11 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       };
     case "SERIES_FAILURE":
       return { ...state, seriesLoading: false, errorMessage: action.error };
+    case "MEDIA_UPDATE":
+      return {
+        ...state,
+        mediaData: action.media,
+      };
     default:
       return state;
   }

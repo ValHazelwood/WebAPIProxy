@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MediaData } from "../store/types";
 import Header from "./Header";
 import Dropdown, { Option } from 'react-dropdown';
@@ -8,14 +8,29 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 interface SeriesProps {
     data: MediaData;
+    updateMediaData: (data: MediaData) => void;
     selectSeriesTranslation: (id: number, translationId: number) => void;
     selectSeriesEpisode: (id: number, translationId: number, season: number, episode: number) => void;
     loading: boolean;
 }
 
-const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }: SeriesProps) => {
+const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEpisode, loading }: SeriesProps) => {
+
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     const [currentQualityId, setCurrentQualityId] = useState<string>(data.media.currentQualityId);
+
+    const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            updateMediaData(data);
+        }, 30000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [data, updateMediaData]);
 
     if (loading) {
         return <Loader
@@ -84,6 +99,20 @@ const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }:
                     setCurrentQualityId(option.value);
                 }
 
+                const onTimeUpdated = (e: React.SyntheticEvent) => {
+
+                    if (videoRef.current && currentPositionUpdated) {
+                        data.media.currentTime = videoRef.current.currentTime;
+                    }
+                }
+
+                const onCanPlay = (e: React.SyntheticEvent) => {
+                    if (videoRef.current && !currentPositionUpdated) {
+                        videoRef.current.currentTime = data.media.currentTime;
+                        setCurrentPositionUpdated(true);
+                    }
+                }
+
                 return (<React.Fragment><Header title={data.searchResult.name} />
                     <div className="mediaInfo">
                         <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating}</p>
@@ -91,7 +120,7 @@ const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }:
                         <p>Season: <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} /> ( {seasonsList.map(x => x.label).join(', ').toString()} )</p>
                         <p>Episode: <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} /> ( {episodesList.map(x => x.label).join(', ').toString()} )</p>
                         <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} /> ( {qualityList.map(x => x.label).join(', ').toString()} )</p>
-                        <video controls src={stream.urL2}> <source src={stream.urL2} type="video/mp4" /></video>
+                        <video ref={videoRef} onCanPlay={onCanPlay} onTimeUpdate={onTimeUpdated} controls src={stream.urL2}> <source src={stream.urL2} type="video/mp4" /></video>
                     </div>
                 </React.Fragment>);
             }

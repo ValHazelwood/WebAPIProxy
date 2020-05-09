@@ -9,6 +9,7 @@ import Series from "./Series";
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import createPersistedReducer from 'use-persisted-reducer';
+import { MediaData } from "../store/types";
 
 function App() {
 
@@ -38,6 +39,10 @@ function App() {
     }
   };
 
+  let updateMediaDataHandler = (data: MediaData) => {
+    dispatch({ type: "MEDIA_UPDATE", media: data });
+  }
+
   let displayResults;
 
   if (loading && !errorMessage) {
@@ -47,7 +52,7 @@ function App() {
   } else if (mediaMode && mediaData?.media.type === 0) {
     displayResults = <Movie data={mediaData} />;
   } else if (mediaMode && mediaData?.media.type === 1) {
-    displayResults = <Series loading={seriesLoading} data={mediaData} selectSeriesTranslation={selectSeriesTranslationHandler} selectSeriesEpisode={selectSeriesEpisodeHandler} />;
+    displayResults = <Series loading={seriesLoading} data={mediaData} updateMediaData={updateMediaDataHandler} selectSeriesTranslation={selectSeriesTranslationHandler} selectSeriesEpisode={selectSeriesEpisodeHandler} />;
   } else if (!mediaMode) {
     displayResults = <SearchList results={results} selectHandler={selectSearchResultHandler} />;
   }
