@@ -107,7 +107,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                 }
 
                 const onCanPlay = (e: React.SyntheticEvent) => {
-                    if (videoRef.current && !currentPositionUpdated) {
+                    if (videoRef.current && data.media.currentTime && !currentPositionUpdated) {
                         videoRef.current.currentTime = data.media.currentTime;
                         setCurrentPositionUpdated(true);
                     }
