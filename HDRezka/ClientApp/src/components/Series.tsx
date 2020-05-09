@@ -15,7 +15,7 @@ interface SeriesProps {
 
 const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }: SeriesProps) => {
 
-    const [currentQualityId, setCurrentQualityId] = useState<string>("480p");
+    const [currentQualityId, setCurrentQualityId] = useState<string>(data.media.currentQualityId);
 
     if (loading) {
         return <Loader
@@ -80,6 +80,7 @@ const Series = ({ data, selectSeriesTranslation, selectSeriesEpisode, loading }:
 
                 const onQualitySelected = (option: Option) => {
 
+                    data.media.currentQualityId = option.value;
                     setCurrentQualityId(option.value);
                 }
 

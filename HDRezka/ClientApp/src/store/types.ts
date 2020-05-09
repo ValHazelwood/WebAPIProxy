@@ -30,6 +30,7 @@ export type Media = {
   currentSeason: number | null | undefined;
   currentEpisode: number | null | undefined;
   translations: Translation[];
+  currentQualityId: string;
 };
 
 export type SeasonData = {

@@ -46,6 +46,7 @@ const ActionService = {
         .then((response) => response.json() as Promise<Media>)
         .then((result) => {
           if (selectedItem) {
+            result.currentQualityId = "480p";
             dispatch({
               type: "MEDIA_SUCCESS",
               media: {
@@ -99,6 +100,7 @@ const ActionService = {
           currentSeason: result.currentSeason,
           currentEpisode: result.currentEpisode,
           translations: translations,
+          currentQualityId: mediaData.media.currentQualityId,
         };
 
         dispatch({
@@ -151,6 +153,7 @@ const ActionService = {
           currentSeason: season,
           currentEpisode: episode,
           translations: translations,
+          currentQualityId: mediaData.media.currentQualityId,
         };
 
         dispatch({

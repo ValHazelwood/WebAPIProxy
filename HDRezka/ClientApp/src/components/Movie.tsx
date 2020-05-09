@@ -12,7 +12,7 @@ const Movie = ({ data }: MovieProps) => {
 
     const [currentTranslationId, setCurrentTranslationId] = useState<number>(data.media.currentTranslationId);
 
-    const [currentQualityId, setCurrentQualityId] = useState<string>("480p");
+    const [currentQualityId, setCurrentQualityId] = useState<string>(data.media.currentQualityId);
 
     console.log("Movie rendered");
 
@@ -40,6 +40,7 @@ const Movie = ({ data }: MovieProps) => {
 
             const onQualitySelected = (option: Option) => {
 
+                data.media.currentQualityId = option.value;
                 setCurrentQualityId(option.value);
             }
 
