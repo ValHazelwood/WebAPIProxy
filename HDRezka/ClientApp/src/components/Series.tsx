@@ -99,17 +99,23 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                     setCurrentQualityId(option.value);
                 }
 
-                const onTimeUpdated = (e: React.SyntheticEvent) => {
+                const onTimeUpdatedHandler = (e: React.SyntheticEvent) => {
 
                     if (videoRef.current && currentPositionUpdated) {
                         data.media.currentTime = videoRef.current.currentTime;
                     }
                 }
 
-                const onCanPlay = (e: React.SyntheticEvent) => {
+                const onCanPlayHandler = (e: React.SyntheticEvent) => {
                     if (videoRef.current && !currentPositionUpdated) {
                         videoRef.current.currentTime = data.media.currentTime;
                         setCurrentPositionUpdated(true);
+                    }
+                }
+
+                const onPlayHandler = (e: React.SyntheticEvent) => {
+                    if (videoRef.current && videoRef.current.requestFullscreen) {
+                        videoRef.current.requestFullscreen();
                     }
                 }
 
@@ -120,7 +126,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                         <p>Season: <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} /> ( {seasonsList.map(x => x.label).join(', ').toString()} )</p>
                         <p>Episode: <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} /> ( {episodesList.map(x => x.label).join(', ').toString()} )</p>
                         <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} /> ( {qualityList.map(x => x.label).join(', ').toString()} )</p>
-                        <video ref={videoRef} onCanPlay={onCanPlay} onTimeUpdate={onTimeUpdated} controls src={stream.urL2}> <source src={stream.urL2} type="video/mp4" /></video>
+                        <video ref={videoRef} onPlay={onPlayHandler} onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}> <source src={stream.urL2} type="video/mp4" /></video>
                     </div>
                 </React.Fragment>);
             }

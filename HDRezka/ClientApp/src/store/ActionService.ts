@@ -171,6 +171,12 @@ const ActionService = {
         });
       });
   },
+  updateMediaDataHandler: function (
+    data: MediaData,
+    dispatch: React.Dispatch<any>
+  ) {
+    dispatch({ type: "MEDIA_UPDATE", media: data });
+  },
 };
 
 export default ActionService;

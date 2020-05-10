@@ -40,7 +40,7 @@ function App() {
   };
 
   let updateMediaDataHandler = (data: MediaData) => {
-    dispatch({ type: "MEDIA_UPDATE", media: data });
+    ActionService.updateMediaDataHandler(data, dispatch);
   }
 
   let displayResults;
@@ -50,7 +50,7 @@ function App() {
   } else if (errorMessage) {
     displayResults = <div className="errorMessage">{errorMessage.toString()}</div>;
   } else if (mediaMode && mediaData?.media.type === 0) {
-    displayResults = <Movie data={mediaData} />;
+    displayResults = <Movie data={mediaData} updateMediaData={updateMediaDataHandler} />;
   } else if (mediaMode && mediaData?.media.type === 1) {
     displayResults = <Series loading={seriesLoading} data={mediaData} updateMediaData={updateMediaDataHandler} selectSeriesTranslation={selectSeriesTranslationHandler} selectSeriesEpisode={selectSeriesEpisodeHandler} />;
   } else if (!mediaMode) {
