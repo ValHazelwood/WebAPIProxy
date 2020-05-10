@@ -40,6 +40,7 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
         results: action.results,
         mediaMode: false,
         mediaData: undefined,
+        errorMessage: "",
       };
     case "SEARCH_FAILURE":
       return { ...state, loading: false, errorMessage: action.error };
