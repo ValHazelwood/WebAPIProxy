@@ -86,10 +86,63 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                     }
                 }
 
+                const prevSeasonSelected = (e: React.MouseEvent) => {
+
+                    if (data.media.currentSeason) {
+                        let currentSeasonIndex = seasonsList.findIndex(x => parseInt(x.value) === data.media.currentSeason);
+
+                        let prevSeason = seasonsList[currentSeasonIndex - 1].value;
+
+                        let queryEpisode = translation?.seasons?.find(x => x.id === parseInt(prevSeason))?.episodes[0];
+
+                        if (queryEpisode) {
+                            selectSeriesEpisode(data.media.id, data.media.currentTranslationId, parseInt(prevSeason), queryEpisode);
+                        }
+                    }
+                }
+
+                const nextSeasonSelected = (e: React.MouseEvent) => {
+
+                    if (data.media.currentSeason) {
+
+                        let currentSeasonIndex = seasonsList.findIndex(x => parseInt(x.value) === data.media.currentSeason);
+
+                        let nextSeason = seasonsList[currentSeasonIndex + 1].value;
+
+                        let queryEpisode = translation?.seasons?.find(x => x.id === parseInt(nextSeason))?.episodes[0];
+
+                        if (queryEpisode) {
+                            selectSeriesEpisode(data.media.id, data.media.currentTranslationId, parseInt(nextSeason), queryEpisode);
+                        }
+                    }
+                }
+
                 const onEpisodeSelected = (option: Option) => {
 
                     if (data.media.currentSeason) {
                         selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(option.value));
+                    }
+                }
+
+                const prevEpisodeSelected = (e: React.MouseEvent) => {
+                    if (data.media.currentSeason && data.media.currentEpisode) {
+
+                        let currentEpisodeIndex = episodesList.findIndex(x => parseInt(x.value) === data.media.currentEpisode);
+
+                        let prevEpisode = episodesList[currentEpisodeIndex - 1].value;
+
+                        selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(prevEpisode));
+                    }
+                }
+
+                const nextEpisodeSelected = (e: React.MouseEvent) => {
+                    if (data.media.currentSeason && data.media.currentEpisode) {
+
+                        let currentEpisodeIndex = episodesList.findIndex(x => parseInt(x.value) === data.media.currentEpisode);
+
+                        let nextEpisode = episodesList[currentEpisodeIndex + 1].value;
+
+                        selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(nextEpisode));
                     }
                 }
 
@@ -125,8 +178,8 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                     <div className="mediaInfo">
                         <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={fullScreenHandler}>Full screen</button></p>
                         <p>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} /> ( {translationsList.map(x => x.label).join(', ').toString()} )</p>
-                        <p>Season: <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} /> ( {seasonsList.map(x => x.label).join(', ').toString()} )</p>
-                        <p>Episode: <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} /> ( {episodesList.map(x => x.label).join(', ').toString()} )</p>
+                        <p>Season: <button onClick={prevSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[0].value)}>&lt;</button> <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} /> <button onClick={nextSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[seasonsList.length - 1].value)}>&gt;</button> ( {seasonsList.map(x => x.label).join(', ').toString()} ) </p>
+                        <p>Episode: <button onClick={prevEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[0].value)}>&lt;</button> <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} /> <button onClick={nextEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[episodesList.length - 1].value)}>&gt;</button> ( {episodesList.map(x => x.label).join(', ').toString()} )</p>
                         <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} /> ( {qualityList.map(x => x.label).join(', ').toString()} )</p>
                         <video ref={videoRef} onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}> <source src={stream.urL2} type="video/mp4" /></video>
                     </div>
