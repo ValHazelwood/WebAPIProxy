@@ -22,9 +22,9 @@ namespace HDRezka.Controllers
             _logger = logger;
             _rezkaFetch = new RezkaFetch(clientFactory);
         }
-                
+
         [HttpPost]
-        public async Task<Media> Post([FromBody]string url)
+        public async Task<Media> Post([FromBody] string url)
         {
             if (string.IsNullOrEmpty(url)) return null;
 
@@ -37,6 +37,13 @@ namespace HDRezka.Controllers
             var translations = RezkaParser.GetTranslations(htmlDocument);
 
             media.Translations = media.Translations.Union(translations.Where(x => x.Id != media.CurrentTranslationId)).ToArray();
+
+            var defaultTranslation = translations.SingleOrDefault(x => x.Id == media.CurrentTranslationId);
+
+            if (defaultTranslation != null)
+            {
+                media.Translations[0].Name = defaultTranslation.Name;
+            }
 
             if (media.Type == MediaType.Series)
             {
