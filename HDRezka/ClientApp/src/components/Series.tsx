@@ -32,7 +32,7 @@ const Series = ({ data }: SeriesProps) => {
         return () => {
             clearInterval(interval);
         };
-    }, [data, ActionService.updateMediaDataHandler, dispatch]);
+    }, [data, dispatch]);
 
     if (seriesLoading) {
         return <Loader

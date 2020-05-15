@@ -22,19 +22,17 @@ const Movie = ({ data }: MovieProps) => {
 
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
 
-    let updateMediaData = ActionService.updateMediaDataHandler;
-
     useEffect(() => {
         const interval = setInterval(() => {
 
-            updateMediaData(data, dispatch);
+            ActionService.updateMediaDataHandler(data, dispatch);
 
         }, 30000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [data, updateMediaData, dispatch]);
+    }, [data, dispatch]);
 
     console.log("Movie rendered");
 
