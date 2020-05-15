@@ -1,17 +1,20 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { MediaData } from "../store/types";
 import Header from "./Header";
+import { ContextApp } from "../store/reducer";
+import ActionService from "../store/ActionService";
 import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
 
 interface MovieProps {
     data: MediaData;
-    updateMediaData: (data: MediaData) => void;
 }
 
-const Movie = ({ data, updateMediaData }: MovieProps) => {
+const Movie = ({ data }: MovieProps) => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    const { dispatch } = useContext(ContextApp);
 
     const [currentTranslationId, setCurrentTranslationId] = useState<number>(data.media.currentTranslationId);
 
@@ -19,15 +22,19 @@ const Movie = ({ data, updateMediaData }: MovieProps) => {
 
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
 
+    let updateMediaData = ActionService.updateMediaDataHandler;
+
     useEffect(() => {
         const interval = setInterval(() => {
-            updateMediaData(data);
+
+            updateMediaData(data, dispatch);
+
         }, 30000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [data, updateMediaData]);
+    }, [data, updateMediaData, dispatch]);
 
     console.log("Movie rendered");
 

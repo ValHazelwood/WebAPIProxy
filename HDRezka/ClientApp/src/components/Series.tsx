@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { MediaData } from "../store/types";
 import Header from "./Header";
+import { ContextApp } from "../store/reducer";
+import ActionService from "../store/ActionService";
 import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
 import Loader from 'react-loader-spinner';
@@ -8,15 +10,15 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 interface SeriesProps {
     data: MediaData;
-    updateMediaData: (data: MediaData) => void;
-    selectSeriesTranslation: (id: number, translationId: number) => void;
-    selectSeriesEpisode: (id: number, translationId: number, season: number, episode: number) => void;
-    loading: boolean;
 }
 
-const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEpisode, loading }: SeriesProps) => {
+const Series = ({ data }: SeriesProps) => {
 
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    const { state, dispatch } = useContext(ContextApp);
+
+    const { seriesLoading } = state;
 
     const [currentQualityId, setCurrentQualityId] = useState<string>(data.media.currentQualityId);
 
@@ -24,15 +26,15 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
 
     useEffect(() => {
         const interval = setInterval(() => {
-            updateMediaData(data);
+            ActionService.updateMediaDataHandler(data, dispatch);
         }, 30000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [data, updateMediaData]);
+    }, [data, ActionService.updateMediaDataHandler, dispatch]);
 
-    if (loading) {
+    if (seriesLoading) {
         return <Loader
             type="TailSpin"
             color="#00BFFF"
@@ -75,14 +77,14 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
 
                 const onTranslationSelected = (option: Option) => {
 
-                    selectSeriesTranslation(data.media.id, parseInt(option.value));
+                    ActionService.selectSeriesTranslationHandler(data.media.id, parseInt(option.value), data, dispatch);
                 }
 
                 const onSeasonSelected = (option: Option) => {
 
                     let queryEpisode = translation?.seasons?.find(x => x.id === parseInt(option.value))?.episodes[0];
                     if (queryEpisode) {
-                        selectSeriesEpisode(data.media.id, data.media.currentTranslationId, parseInt(option.value), queryEpisode);
+                        ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, parseInt(option.value), queryEpisode, data, dispatch);
                     }
                 }
 
@@ -96,7 +98,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                         let queryEpisode = translation?.seasons?.find(x => x.id === parseInt(prevSeason))?.episodes[0];
 
                         if (queryEpisode) {
-                            selectSeriesEpisode(data.media.id, data.media.currentTranslationId, parseInt(prevSeason), queryEpisode);
+                            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, parseInt(prevSeason), queryEpisode, data, dispatch);
                         }
                     }
                 }
@@ -112,7 +114,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                         let queryEpisode = translation?.seasons?.find(x => x.id === parseInt(nextSeason))?.episodes[0];
 
                         if (queryEpisode) {
-                            selectSeriesEpisode(data.media.id, data.media.currentTranslationId, parseInt(nextSeason), queryEpisode);
+                            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, parseInt(nextSeason), queryEpisode, data, dispatch);
                         }
                     }
                 }
@@ -120,7 +122,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
                 const onEpisodeSelected = (option: Option) => {
 
                     if (data.media.currentSeason) {
-                        selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(option.value));
+                        ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(option.value), data, dispatch);
                     }
                 }
 
@@ -131,7 +133,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
 
                         let prevEpisode = episodesList[currentEpisodeIndex - 1].value;
 
-                        selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(prevEpisode));
+                        ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(prevEpisode), data, dispatch);
                     }
                 }
 
@@ -142,7 +144,7 @@ const Series = ({ data, updateMediaData, selectSeriesTranslation, selectSeriesEp
 
                         let nextEpisode = episodesList[currentEpisodeIndex + 1].value;
 
-                        selectSeriesEpisode(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(nextEpisode));
+                        ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(nextEpisode), data, dispatch);
                     }
                 }
 

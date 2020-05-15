@@ -1,3 +1,5 @@
+import { createContext } from "react";
+
 import { SearchResult, MediaData } from "../types";
 
 type ApplicationState = {
@@ -76,4 +78,9 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
   }
 }
 
-export { reducer, initialState };
+const ContextApp = createContext({
+  state: initialState,
+  dispatch: (value: any) => {},
+});
+
+export { reducer, initialState, ContextApp };

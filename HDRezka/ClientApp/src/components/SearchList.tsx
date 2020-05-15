@@ -1,20 +1,20 @@
-import React, { MouseEvent } from "react";
-import { SearchResult } from "../store/types";
+import React, { useContext, MouseEvent } from "react";
 import Header from "./Header";
+import { ContextApp } from "../store/reducer";
+import ActionService from "../store/ActionService";
 
-interface SearchListType {
-    results: SearchResult[];
-    selectHandler: (selectedItemUrl: string) => void;
-}
-
-const SearchList = ({ results, selectHandler }: SearchListType) => {
+const SearchList = () => {
 
     let title: string;
     let outputList;
 
+    const { state, dispatch } = useContext(ContextApp);
+
+    const { results } = state;
+
     const onClickHandler = (e: MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        selectHandler(e.currentTarget.href);
+        ActionService.selectSearchResultHandler(e.currentTarget.href, results, dispatch);
     };
 
     if (results.length) {

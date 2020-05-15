@@ -1,17 +1,17 @@
-import React, { useRef, MouseEvent } from "react";
+import React, { useRef, MouseEvent, useContext } from "react";
+import { ContextApp } from "../store/reducer";
+import ActionService from "../store/ActionService";
 
-type SearchProps = {
-  searchHandler: (input: string) => void;
-};
-
-const Search = ({ searchHandler }: SearchProps) => {
+const Search = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { dispatch } = useContext(ContextApp);
 
   const callSearchFunction = (e: MouseEvent) => {
     e.preventDefault();
     if (inputRef.current && inputRef.current.value.length > 0) {
-      searchHandler(inputRef.current.value);
+      ActionService.search(inputRef.current.value, dispatch);
     }
   };
 
