@@ -20,10 +20,8 @@ function App() {
     displayResults = <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />;
   } else if (errorMessage) {
     displayResults = <div className="errorMessage">{errorMessage.toString()}</div>;
-  } else if (mediaMode && mediaData?.media.type === 0) {
-    displayResults = <Movie data={mediaData} />;
-  } else if (mediaMode && mediaData?.media.type === 1) {
-    displayResults = <Series data={mediaData} />;
+  } else if (mediaMode && mediaData) {
+    displayResults = mediaData.media.type === 0 ? <Movie data={mediaData} /> : <Series data={mediaData} />;
   } else if (!mediaMode) {
     displayResults = <SearchList />;
   }
