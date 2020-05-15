@@ -41,7 +41,6 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
         loading: false,
         results: action.results,
         mediaMode: false,
-        mediaData: undefined,
         errorMessage: "",
       };
     case "SEARCH_FAILURE":

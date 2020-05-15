@@ -31,39 +31,32 @@ const ActionService = {
       });
   },
   selectSearchResultHandler: function (
-    selectedItemUrl: string,
-    results: SearchResult[],
+    selectedItem: SearchResult,
     dispatch: React.Dispatch<any>
   ) {
-    let selectedItem = results.find((x) => x.url === selectedItemUrl);
+    dispatch({
+      type: "MEDIA_REQUEST",
+    });
 
-    if (selectedItem) {
-      dispatch({
-        type: "MEDIA_REQUEST",
-      });
-
-      FetchService.post("media", JSON.stringify(selectedItemUrl))
-        .then((response) => response.json() as Promise<Media>)
-        .then((result) => {
-          if (selectedItem) {
-            result.currentQualityId = "480p";
-            result.currentTime = 0;
-            dispatch({
-              type: "MEDIA_SUCCESS",
-              media: {
-                searchResult: selectedItem,
-                media: result,
-              },
-            });
-          }
-        })
-        .catch((error) => {
-          dispatch({
-            type: "MEDIA_FAILURE",
-            error: error,
-          });
+    FetchService.post("media", JSON.stringify(selectedItem.url))
+      .then((response) => response.json() as Promise<Media>)
+      .then((result) => {
+        result.currentQualityId = "480p";
+        result.currentTime = 0;
+        dispatch({
+          type: "MEDIA_SUCCESS",
+          media: {
+            searchResult: selectedItem,
+            media: result,
+          },
         });
-    }
+      })
+      .catch((error) => {
+        dispatch({
+          type: "MEDIA_FAILURE",
+          error: error,
+        });
+      });
   },
   selectSeriesTranslationHandler: function (
     id: number,

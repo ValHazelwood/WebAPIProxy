@@ -14,7 +14,10 @@ const SearchList = () => {
 
     const onClickHandler = (e: MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        ActionService.selectSearchResultHandler(e.currentTarget.href, results, dispatch);
+        let selectedItem = results.find((x) => x.url === e.currentTarget.href);
+        if (selectedItem) {
+            ActionService.selectSearchResultHandler(selectedItem, dispatch);
+        }
     };
 
     if (results.length) {
