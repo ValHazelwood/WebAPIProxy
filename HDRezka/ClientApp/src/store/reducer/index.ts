@@ -76,9 +76,15 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
         mediaData: action.media,
       };
     case "HISTORY_UPDATE":
+      let { history } = state;
+
+      if (history.length > 9) {
+        history = history.slice(0, -1);
+      }
+
       return {
         ...state,
-        history: [action.media, ...state.history],
+        history: [action.media, ...history],
       };
     default:
       return state;
