@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "../App.css";
 import Search from "./Search";
 import SearchList from "./SearchList";
@@ -32,11 +32,13 @@ function App() {
 
   return (
     <div className="App">
-      <Search />
-      <Switch>
-        <Route path="/history" component={History} />
-        <Route component={() => displayResults} />
-      </Switch>
+      <Router>
+        <Search />
+        <Switch>
+          <Route path="/history" component={History} />
+          <Route component={() => displayResults} />
+        </Switch>
+      </Router>
     </div>
   );
 }
