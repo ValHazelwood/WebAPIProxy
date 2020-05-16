@@ -89,10 +89,10 @@ const Movie = ({ data }: MovieProps) => {
             return (<React.Fragment><Header title={data.searchResult.name} />
                 <div className="mediaInfo">
                     <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={fullScreenHandler}>Full screen</button></p>
-                    <p>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />
+                    <p>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />&nbsp;
                     ( {translationsList.map(x => x.label).join(', ').toString()} )
                     </p>
-                    <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />
+                    <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
                     ( {qualityList.map(x => x.label).join(', ').toString()} )
                     </p>
                     <video ref={videoRef} onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>

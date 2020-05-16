@@ -179,20 +179,20 @@ const Series = ({ data }: SeriesProps) => {
                 return (<React.Fragment><Header title={data.searchResult.name} />
                     <div className="mediaInfo">
                         <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={fullScreenHandler}>Full screen</button></p>
-                        <p>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />
+                        <p>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />&nbsp;
                         ( {translationsList.map(x => x.label).join(', ').toString()} )
                         </p>
-                        <p>Season: <button onClick={prevSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[0].value)}>&lt;</button>
-                            <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} />
-                            <button onClick={nextSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[seasonsList.length - 1].value)}>&gt;</button>
+                        <p>Season: <button onClick={prevSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[0].value)}>&lt;</button>&nbsp;
+                            <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} />&nbsp;
+                            <button onClick={nextSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[seasonsList.length - 1].value)}>&gt;</button>&nbsp;
                         ( {seasonsList.map(x => x.label).join(', ').toString()} )
                         </p>
-                        <p>Episode: <button onClick={prevEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[0].value)}>&lt;</button>
-                            <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} />
-                            <button onClick={nextEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[episodesList.length - 1].value)}>&gt;</button>
+                        <p>Episode: <button onClick={prevEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[0].value)}>&lt;</button>&nbsp;
+                            <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} />&nbsp;
+                            <button onClick={nextEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[episodesList.length - 1].value)}>&gt;</button>&nbsp;
                         ( {episodesList.map(x => x.label).join(', ').toString()} )
                         </p>
-                        <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />
+                        <p>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
                         ( {qualityList.map(x => x.label).join(', ').toString()} )
                         </p>
                         <video ref={videoRef} onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
