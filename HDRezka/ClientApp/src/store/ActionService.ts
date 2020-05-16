@@ -170,6 +170,9 @@ const ActionService = {
   ) {
     dispatch({ type: "MEDIA_UPDATE", media: data });
   },
+  push2History: function (data: MediaData, dispatch: React.Dispatch<any>) {
+    dispatch({ type: "HISTORY_UPDATE", media: data });
+  },
 };
 
 export default ActionService;

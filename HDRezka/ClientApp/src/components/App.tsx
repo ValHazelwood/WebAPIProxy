@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
+import { Route, Switch } from "react-router-dom";
 import "../App.css";
 import Search from "./Search";
 import SearchList from "./SearchList";
 import { ContextApp } from "../store/reducer";
 import Movie from "./Movie";
 import Series from "./Series";
+import History from "./History";
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
@@ -14,7 +16,7 @@ function App() {
 
   const { loading, errorMessage, mediaMode, mediaData } = state;
 
-  let displayResults;
+  let displayResults: JSX.Element;
 
   if (loading && !errorMessage) {
     displayResults = <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />;
@@ -31,7 +33,10 @@ function App() {
   return (
     <div className="App">
       <Search />
-      {displayResults}
+      <Switch>
+        <Route path="/history" component={History} />
+        <Route component={() => displayResults} />
+      </Switch>
     </div>
   );
 }

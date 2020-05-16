@@ -16,7 +16,7 @@
 .App-header {
   background-color: #282c34;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
@@ -41,4 +41,24 @@
 .seasonSelect,
 .episodeSelect {
   display: inline-flex;
+}
+
+.App-header > .buttons,
+.search {
+  display: flex;
+}
+
+.mediaInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.mediaInfo > video {
+  width: fit-content;
+  height: fit-content;
+  align-self: center;
+}
+
+.mediaInfo > span {
+  margin: 5px;
 }

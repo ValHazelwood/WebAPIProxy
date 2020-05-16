@@ -1,16 +1,28 @@
 import React, { useRef, MouseEvent, useContext } from "react";
 import { ContextApp } from "../store/reducer";
 import ActionService from "../store/ActionService";
+import { useHistory } from "react-router-dom";
 
 const Search = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { dispatch } = useContext(ContextApp);
+  const { state, dispatch } = useContext(ContextApp);
+
+  const { mediaData } = state;
+
+  let history = useHistory();
 
   const callSearchFunction = (e: MouseEvent) => {
     e.preventDefault();
-    if (inputRef.current && inputRef.current.value.length > 0) {
+    if (inputRef.current && /\S/.test(inputRef.current.value)) {
+
+      if (mediaData) {
+        ActionService.push2History(mediaData, dispatch);
+      }
+
+      history.push("/");
+
       ActionService.search(inputRef.current.value, dispatch);
     }
   };
@@ -19,11 +31,15 @@ const Search = () => {
 
   return (
     <header className="App-header">
-      <form className="search">
-        <input ref={inputRef} type="text"
-        />
-        <input onClick={callSearchFunction} type="submit" value="SEARCH" />
-      </form>
+      <div className="buttons" >
+        <button onClick={() => { history.push("/"); }} >Home</button>
+        <button onClick={() => { history.push("/history"); }} >History</button>
+        <form className="search">
+          <input ref={inputRef} type="text"
+          />
+          <input onClick={callSearchFunction} type="submit" value="SEARCH" />
+        </form>
+      </div>
     </header>
   );
 };

@@ -9,6 +9,7 @@ type ApplicationState = {
   errorMessage: string;
   mediaMode: boolean;
   mediaData?: MediaData;
+  history: MediaData[];
 };
 
 type Action =
@@ -21,6 +22,7 @@ type Action =
   | { type: "SEARCH_FAILURE"; error: string }
   | { type: "MEDIA_FAILURE"; error: string }
   | { type: "MEDIA_UPDATE"; media: MediaData }
+  | { type: "HISTORY_UPDATE"; media: MediaData }
   | { type: "SERIES_FAILURE"; error: string };
 
 const initialState: ApplicationState = {
@@ -29,6 +31,7 @@ const initialState: ApplicationState = {
   results: [],
   errorMessage: "",
   mediaMode: false,
+  history: [],
 };
 
 function reducer(state: ApplicationState, action: Action): ApplicationState {
@@ -71,6 +74,11 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       return {
         ...state,
         mediaData: action.media,
+      };
+    case "HISTORY_UPDATE":
+      return {
+        ...state,
+        history: [action.media, ...state.history],
       };
     default:
       return state;
