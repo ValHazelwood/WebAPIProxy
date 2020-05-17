@@ -34,7 +34,7 @@ const History = () => {
         }
     };
 
-    if (history.length) {
+    if (history && history.length) {
         outputList = history.map((item, index) => (
             <li key={index}>
                 <a href={item.searchResult.url} onClick={onClickHandler}>{item.searchResult.name} {item.searchResult.text} {item.searchResult.rating}</a>

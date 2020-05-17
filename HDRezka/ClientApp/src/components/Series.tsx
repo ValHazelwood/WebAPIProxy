@@ -25,12 +25,8 @@ const Series = ({ data }: SeriesProps) => {
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            ActionService.updateMediaDataHandler(data, dispatch);
-        }, 30000);
-
         return () => {
-            clearInterval(interval);
+            ActionService.updateMediaDataHandler(data, dispatch);
         };
     }, [data, dispatch]);
 
