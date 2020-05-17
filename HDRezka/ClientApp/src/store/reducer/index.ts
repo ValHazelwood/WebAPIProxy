@@ -99,6 +99,7 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
         mediaData: action.media,
         loading: false,
         seriesLoading: false,
+        mode: Mode.Media,
       };
     case "HISTORY_CLEAR":
       return {

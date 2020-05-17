@@ -10,12 +10,17 @@ const SearchList = () => {
 
     const { state, dispatch } = useContext(ContextApp);
 
-    const { results } = state;
+    const { mediaData, results } = state;
 
     const onClickHandler = (e: MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         let selectedItem = results.find((x) => x.url === e.currentTarget.href);
         if (selectedItem) {
+
+            if (mediaData) {
+                ActionService.push2History(mediaData, dispatch);
+            }
+
             ActionService.selectSearchResultHandler(selectedItem, dispatch);
         }
     };

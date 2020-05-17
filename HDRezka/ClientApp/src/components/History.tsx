@@ -2,7 +2,6 @@ import React, { useContext, MouseEvent } from "react";
 import { ContextApp } from "../store/reducer";
 import Header from "./Header";
 import ActionService from "../store/ActionService";
-import { Mode } from "../store/types";
 
 const History = () => {
 
@@ -27,8 +26,6 @@ const History = () => {
             }
 
             ActionService.fromHistory(selectedItem, dispatch);
-
-            ActionService.changeMode(Mode.Media, dispatch)
         }
     };
 

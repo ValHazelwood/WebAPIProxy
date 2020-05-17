@@ -7,18 +7,11 @@ const Search = () => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { state, dispatch } = useContext(ContextApp);
-
-  const { mediaData } = state;
+  const { dispatch } = useContext(ContextApp);
 
   const callSearchFunction = (e: MouseEvent) => {
     e.preventDefault();
     if (inputRef.current && /\S/.test(inputRef.current.value)) {
-
-      if (mediaData) {
-        ActionService.push2History(mediaData, dispatch);
-      }
-
       ActionService.search(inputRef.current.value, dispatch);
     }
   };
