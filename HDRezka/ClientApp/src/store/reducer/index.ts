@@ -23,6 +23,8 @@ type Action =
   | { type: "MEDIA_FAILURE"; error: string }
   | { type: "MEDIA_UPDATE"; media: MediaData }
   | { type: "HISTORY_UPDATE"; media: MediaData }
+  | { type: "FROM_HISTORY"; media: MediaData }
+  | { type: "HISTORY_CLEAR" }
   | { type: "SERIES_FAILURE"; error: string };
 
 const initialState: ApplicationState = {
@@ -85,6 +87,16 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       return {
         ...state,
         history: [action.media, ...history],
+      };
+    case "FROM_HISTORY":
+      return {
+        ...state,
+        mediaData: action.media,
+      };
+    case "HISTORY_CLEAR":
+      return {
+        ...state,
+        history: [],
       };
     default:
       return state;
