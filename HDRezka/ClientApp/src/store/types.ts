@@ -45,3 +45,9 @@ export type MediaData = {
   searchResult: SearchResult;
   media: Media;
 };
+
+export enum Mode {
+  Result = 0,
+  Media = 1,
+  History = 2,
+}

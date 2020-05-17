@@ -46,6 +46,12 @@
 .App-header > .buttons,
 .search {
   display: flex;
+  margin-left: 1px;
+}
+
+.App-header > .buttons > button {
+  margin-left: 1px;
+  margin-right: 1px;
 }
 
 .mediaInfo {

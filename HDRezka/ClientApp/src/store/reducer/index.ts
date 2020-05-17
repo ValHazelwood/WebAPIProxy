@@ -1,13 +1,13 @@
 import { createContext } from "react";
 
-import { SearchResult, MediaData } from "../types";
+import { SearchResult, MediaData, Mode } from "../types";
 
 type ApplicationState = {
   loading: boolean;
   seriesLoading: boolean;
   results: SearchResult[];
   errorMessage: string;
-  mediaMode: boolean;
+  mode: Mode;
   mediaData?: MediaData;
   history: MediaData[];
 };
@@ -24,6 +24,7 @@ type Action =
   | { type: "MEDIA_UPDATE"; media: MediaData }
   | { type: "HISTORY_UPDATE"; media: MediaData }
   | { type: "FROM_HISTORY"; media: MediaData }
+  | { type: "CHANGE_MODE"; mode: Mode }
   | { type: "HISTORY_CLEAR" }
   | { type: "SERIES_FAILURE"; error: string };
 
@@ -32,7 +33,7 @@ const initialState: ApplicationState = {
   seriesLoading: false,
   results: [],
   errorMessage: "",
-  mediaMode: false,
+  mode: Mode.Result,
   history: [],
 };
 
@@ -45,7 +46,7 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
         ...state,
         loading: false,
         results: action.results,
-        mediaMode: false,
+        mode: Mode.Result,
         errorMessage: "",
       };
     case "SEARCH_FAILURE":
@@ -56,7 +57,7 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       return {
         ...state,
         loading: false,
-        mediaMode: true,
+        mode: Mode.Media,
         mediaData: action.media,
       };
     case "MEDIA_FAILURE":
@@ -67,7 +68,7 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       return {
         ...state,
         seriesLoading: false,
-        mediaMode: true,
+        mode: Mode.Media,
         mediaData: action.media,
       };
     case "SERIES_FAILURE":
@@ -79,6 +80,10 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       };
     case "HISTORY_UPDATE":
       let { history } = state;
+
+      if (!history) {
+        history = [];
+      }
 
       if (history.length > 9) {
         history = history.slice(0, -1);
@@ -92,11 +97,22 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
       return {
         ...state,
         mediaData: action.media,
+        loading: false,
+        seriesLoading: false,
       };
     case "HISTORY_CLEAR":
       return {
         ...state,
         history: [],
+        loading: false,
+        seriesLoading: false,
+      };
+    case "CHANGE_MODE":
+      return {
+        ...state,
+        loading: false,
+        seriesLoading: false,
+        mode: action.mode,
       };
     default:
       return state;

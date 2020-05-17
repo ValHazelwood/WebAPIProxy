@@ -2,7 +2,7 @@ import React, { useContext, MouseEvent } from "react";
 import { ContextApp } from "../store/reducer";
 import Header from "./Header";
 import ActionService from "../store/ActionService";
-import { useHistory } from "react-router-dom";
+import { Mode } from "../store/types";
 
 const History = () => {
 
@@ -12,8 +12,6 @@ const History = () => {
     const { state, dispatch } = useContext(ContextApp);
 
     const { mediaData, history } = state;
-
-    let browserHistory = useHistory();
 
     console.log("History rendered");
 
@@ -30,7 +28,7 @@ const History = () => {
 
             ActionService.fromHistory(selectedItem, dispatch);
 
-            browserHistory.push("/");
+            ActionService.changeMode(Mode.Media, dispatch)
         }
     };
 

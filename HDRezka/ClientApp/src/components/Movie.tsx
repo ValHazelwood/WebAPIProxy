@@ -23,8 +23,14 @@ const Movie = ({ data }: MovieProps) => {
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
 
     useEffect(() => {
-        return () => {
+        const interval = setInterval(() => {
+
             ActionService.updateMediaDataHandler(data, dispatch);
+
+        }, 30000);
+
+        return () => {
+            clearInterval(interval);
         };
     }, [data, dispatch]);
 

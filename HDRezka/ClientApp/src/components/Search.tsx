@@ -1,7 +1,7 @@
 import React, { useRef, MouseEvent, useContext } from "react";
 import { ContextApp } from "../store/reducer";
 import ActionService from "../store/ActionService";
-import { useHistory } from "react-router-dom";
+import { Mode } from "../store/types";
 
 const Search = () => {
 
@@ -11,8 +11,6 @@ const Search = () => {
 
   const { mediaData } = state;
 
-  let history = useHistory();
-
   const callSearchFunction = (e: MouseEvent) => {
     e.preventDefault();
     if (inputRef.current && /\S/.test(inputRef.current.value)) {
@@ -20,8 +18,6 @@ const Search = () => {
       if (mediaData) {
         ActionService.push2History(mediaData, dispatch);
       }
-
-      history.push("/");
 
       ActionService.search(inputRef.current.value, dispatch);
     }
@@ -32,8 +28,9 @@ const Search = () => {
   return (
     <header className="App-header">
       <div className="buttons" >
-        <button onClick={() => { history.push("/"); }} >Home</button>
-        <button onClick={() => { history.push("/history"); }} >History</button>
+        <button onClick={() => { ActionService.changeMode(Mode.Result, dispatch) }} >Search results</button>
+        <button onClick={() => { ActionService.changeMode(Mode.Media, dispatch) }} >Watch</button>
+        <button onClick={() => { ActionService.changeMode(Mode.History, dispatch) }} >History</button>
         <form className="search">
           <input ref={inputRef} type="text"
           />

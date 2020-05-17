@@ -6,6 +6,7 @@ import {
   SeasonData,
   Translation,
   Stream,
+  Mode,
 } from "./types";
 
 const ActionService = {
@@ -178,6 +179,9 @@ const ActionService = {
   },
   clearHistory: function (dispatch: React.Dispatch<any>) {
     dispatch({ type: "HISTORY_CLEAR" });
+  },
+  changeMode: function (mode: Mode, dispatch: React.Dispatch<any>) {
+    dispatch({ type: "CHANGE_MODE", mode: mode });
   },
 };
 
