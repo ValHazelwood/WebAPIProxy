@@ -14,6 +14,8 @@ interface SeriesProps {
 
 const Series = ({ data }: SeriesProps) => {
 
+    const countdownTimeout: number = 5;
+
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { state, dispatch } = useContext(ContextApp);
@@ -26,7 +28,7 @@ const Series = ({ data }: SeriesProps) => {
 
     const [videoOverlayVisible, setVideoOverlayVisible] = useState<boolean>(false);
 
-    const [countDown, setCountDown] = useState<number>(5);
+    const [countDown, setCountDown] = useState<number>(countdownTimeout);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -172,8 +174,8 @@ const Series = ({ data }: SeriesProps) => {
                             nextEpisodeSelectedHandler();
                             setVideoOverlayVisible(false);
                             clearInterval(countdownInterval);
-                            setCountDown(5);
-                        }, 5000);
+                            setCountDown(countdownTimeout);
+                        }, countdownTimeout);
                     }
                 }
 
