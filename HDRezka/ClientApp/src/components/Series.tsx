@@ -159,22 +159,27 @@ const Series = ({ data }: SeriesProps) => {
                     setCurrentQualityId(option.value);
                 }
 
+                const nextVideoPlayHandler = () => {
+                    setVideoOverlayVisible(true);
+                    setTimeout(() => {
+                        nextEpisodeSelectedHandler();
+                        setVideoOverlayVisible(false);
+                    }, 5000);
+                }
+
                 const onTimeUpdatedHandler = (e: React.SyntheticEvent) => {
 
                     if (videoRef.current && currentPositionUpdated) {
                         data.media.currentTime = videoRef.current.currentTime;
 
-                        if (document.fullscreenElement && (videoRef.current.duration - videoRef.current.currentTime) < 30) {
-                            if (document.webkitCancelFullScreen && document.webkitIsFullScreen) {
+                        if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < 30) {
+                            if (document.webkitIsFullScreen && document.webkitCancelFullScreen) {
                                 document.webkitCancelFullScreen();
-                            } else if (document.exitFullscreen) {
+                                nextVideoPlayHandler();
+                            } else if (document.fullscreenElement && document.exitFullscreen) {
                                 document.exitFullscreen();
+                                nextVideoPlayHandler();
                             }
-                            setVideoOverlayVisible(true);
-                            setTimeout(() => {
-                                nextEpisodeSelectedHandler();
-                                setVideoOverlayVisible(false);
-                            }, 5000);
                         }
                     }
                 }
