@@ -14,7 +14,7 @@ interface SeriesProps {
 
 const Series = ({ data }: SeriesProps) => {
 
-    const countdownTimeout: number = 5;
+    const countdownTimeout: number = 10;
 
     const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -175,7 +175,7 @@ const Series = ({ data }: SeriesProps) => {
                             setVideoOverlayVisible(false);
                             clearInterval(countdownInterval);
                             setCountDown(countdownTimeout);
-                        }, countdownTimeout);
+                        }, countdownTimeout * 1000);
                     }
                 }
 
