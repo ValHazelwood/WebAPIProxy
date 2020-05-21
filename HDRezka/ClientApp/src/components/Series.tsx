@@ -26,6 +26,8 @@ const Series = ({ data }: SeriesProps) => {
 
     const [videoOverlayVisible, setVideoOverlayVisible] = useState<boolean>(false);
 
+    const [countDown, setCountDown] = useState<number>(5);
+
     useEffect(() => {
         const interval = setInterval(() => {
 
@@ -160,11 +162,19 @@ const Series = ({ data }: SeriesProps) => {
                 }
 
                 const nextVideoPlayHandler = () => {
-                    setVideoOverlayVisible(true);
-                    setTimeout(() => {
-                        nextEpisodeSelectedHandler();
-                        setVideoOverlayVisible(false);
-                    }, 5000);
+
+                    if (data.media.currentEpisode !== parseInt(episodesList[episodesList.length - 1].value)) {
+
+                        let countdownInterval = setInterval(() => { setCountDown(countDown => countDown - 1) }, 1000);
+
+                        setVideoOverlayVisible(true);
+                        setTimeout(() => {
+                            nextEpisodeSelectedHandler();
+                            setVideoOverlayVisible(false);
+                            clearInterval(countdownInterval);
+                            setCountDown(5);
+                        }, 5000);
+                    }
                 }
 
                 const onTimeUpdatedHandler = (e: React.SyntheticEvent) => {
@@ -175,11 +185,10 @@ const Series = ({ data }: SeriesProps) => {
                         if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < 30) {
                             if (document.webkitIsFullScreen && document.webkitCancelFullScreen) {
                                 document.webkitCancelFullScreen();
-                                nextVideoPlayHandler();
                             } else if (document.fullscreenElement && document.exitFullscreen) {
                                 document.exitFullscreen();
-                                nextVideoPlayHandler();
                             }
+                            nextVideoPlayHandler();
                         }
                     }
                 }
@@ -223,7 +232,7 @@ const Series = ({ data }: SeriesProps) => {
                             <video className="video" ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
                                 <source src={stream.urL2} type="video/mp4" />
                             </video>
-                            {videoOverlayVisible && <div className="video-overlay">Next video will start in 5 seconds...</div>}
+                            {videoOverlayVisible && <div className="video-overlay">Next video will start in {countDown} seconds...</div>}
                         </div>
 
                     </div>
