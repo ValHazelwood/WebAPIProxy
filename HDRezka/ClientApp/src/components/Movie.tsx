@@ -95,7 +95,7 @@ const Movie = ({ data }: MovieProps) => {
                     <span>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
                     ( {qualityList.map(x => x.label).join(', ').toString()} )
                     </span>
-                    <video ref={videoRef} onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
+                    <video ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
                         <source src={stream.urL2} type="video/mp4" />
                     </video>
                 </div>

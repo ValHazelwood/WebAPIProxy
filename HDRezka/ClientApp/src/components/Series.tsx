@@ -24,6 +24,8 @@ const Series = ({ data }: SeriesProps) => {
 
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
 
+    const [videoOverlayVisible, setVideoOverlayVisible] = useState<boolean>(false);
+
     useEffect(() => {
         const interval = setInterval(() => {
 
@@ -139,15 +141,16 @@ const Series = ({ data }: SeriesProps) => {
                     }
                 }
 
-                const nextEpisodeSelected = (e: React.MouseEvent) => {
+                const nextEpisodeSelectedHandler = () => {
                     if (data.media.currentSeason && data.media.currentEpisode) {
-
                         let currentEpisodeIndex = episodesList.findIndex(x => parseInt(x.value) === data.media.currentEpisode);
-
                         let nextEpisode = episodesList[currentEpisodeIndex + 1].value;
-
                         ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(nextEpisode), data, dispatch);
                     }
+                }
+
+                const nextEpisodeSelected = (e: React.MouseEvent) => {
+                    nextEpisodeSelectedHandler();
                 }
 
                 const onQualitySelected = (option: Option) => {
@@ -160,6 +163,19 @@ const Series = ({ data }: SeriesProps) => {
 
                     if (videoRef.current && currentPositionUpdated) {
                         data.media.currentTime = videoRef.current.currentTime;
+
+                        if (document.fullscreenElement && (videoRef.current.duration - videoRef.current.currentTime) < 30) {
+                            if (document.webkitCancelFullScreen && document.webkitIsFullScreen) {
+                                document.webkitCancelFullScreen();
+                            } else if (document.exitFullscreen) {
+                                document.exitFullscreen();
+                            }
+                            setVideoOverlayVisible(true);
+                            setTimeout(() => {
+                                nextEpisodeSelectedHandler();
+                                setVideoOverlayVisible(false);
+                            }, 5000);
+                        }
                     }
                 }
 
@@ -176,6 +192,7 @@ const Series = ({ data }: SeriesProps) => {
                     } else if (videoRef.current && videoRef.current.requestFullscreen) {
                         videoRef.current.requestFullscreen();
                     }
+                    setVideoOverlayVisible(false);
                 }
 
                 return (<React.Fragment><Header title={data.searchResult.name} />
@@ -197,9 +214,13 @@ const Series = ({ data }: SeriesProps) => {
                         <span>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
                         ( {qualityList.map(x => x.label).join(', ').toString()} )
                         </span>
-                        <video ref={videoRef} onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
-                            <source src={stream.urL2} type="video/mp4" />
-                        </video>
+                        <div className="video-container">
+                            <video className="video" ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
+                                <source src={stream.urL2} type="video/mp4" />
+                            </video>
+                            {videoOverlayVisible && <div className="video-overlay">Next video will start in 5 seconds...</div>}
+                        </div>
+
                     </div>
                 </React.Fragment>);
             }
@@ -211,3 +232,4 @@ const Series = ({ data }: SeriesProps) => {
 };
 
 export default Series;
+
