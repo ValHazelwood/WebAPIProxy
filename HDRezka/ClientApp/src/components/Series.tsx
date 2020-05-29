@@ -16,6 +16,8 @@ const Series = ({ data }: SeriesProps) => {
 
     const countdownTimeout: number = 10;
 
+    const countdownStartTimeout: number = 30;
+
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { state, dispatch } = useContext(ContextApp);
@@ -111,7 +113,7 @@ const Series = ({ data }: SeriesProps) => {
                     }
                 }
 
-                const nextSeasonSelected = (e: React.MouseEvent) => {
+                const nextSeasonSelectedHandler = () => {
 
                     if (data.media.currentSeason) {
 
@@ -125,6 +127,11 @@ const Series = ({ data }: SeriesProps) => {
                             ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, parseInt(nextSeason), queryEpisode, data, dispatch);
                         }
                     }
+                }
+
+                const nextSeasonSelected = (e: React.MouseEvent) => {
+
+                    nextSeasonSelectedHandler();
                 }
 
                 const onEpisodeSelected = (option: Option) => {
@@ -163,19 +170,29 @@ const Series = ({ data }: SeriesProps) => {
                     setCurrentQualityId(option.value);
                 }
 
+                const videoPlayDelayHandler = (action: () => void) => {
+
+                    let countdownInterval = setInterval(() => { setCountDown(countDown => countDown - 1) }, 1000);
+
+                    setVideoOverlayVisible(true);
+                    setTimeout(() => {
+                        action();
+                        setVideoOverlayVisible(false);
+                        clearInterval(countdownInterval);
+                        setCountDown(countdownTimeout);
+                    }, countdownTimeout * 1000);
+
+                }
+
                 const nextVideoPlayHandler = () => {
 
                     if (data.media.currentEpisode !== parseInt(episodesList[episodesList.length - 1].value)) {
 
-                        let countdownInterval = setInterval(() => { setCountDown(countDown => countDown - 1) }, 1000);
+                        videoPlayDelayHandler(nextEpisodeSelectedHandler);
 
-                        setVideoOverlayVisible(true);
-                        setTimeout(() => {
-                            nextEpisodeSelectedHandler();
-                            setVideoOverlayVisible(false);
-                            clearInterval(countdownInterval);
-                            setCountDown(countdownTimeout);
-                        }, countdownTimeout * 1000);
+                    } else {
+
+                        videoPlayDelayHandler(nextSeasonSelectedHandler);
                     }
                 }
 
@@ -184,7 +201,7 @@ const Series = ({ data }: SeriesProps) => {
                     if (videoRef.current && currentPositionUpdated) {
                         data.media.currentTime = videoRef.current.currentTime;
 
-                        if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < 30) {
+                        if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < countdownStartTimeout) {
                             if (document.webkitIsFullScreen && document.webkitCancelFullScreen) {
                                 document.webkitCancelFullScreen();
                             } else if (document.fullscreenElement && document.exitFullscreen) {
