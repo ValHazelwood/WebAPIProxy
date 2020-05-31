@@ -32,17 +32,21 @@ const Series = ({ data }: SeriesProps) => {
 
     const [countDown, setCountDown] = useState<number>(countdownTimeout);
 
+    const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
+
     useEffect(() => {
         const interval = setInterval(() => {
 
-            ActionService.updateMediaDataHandler(data, dispatch);
+            if (updateEnabled) {
+                ActionService.updateMediaDataHandler(data, dispatch);
+            }
 
         }, 30000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [data, dispatch]);
+    }, [data, dispatch, updateEnabled]);
 
     if (seriesLoading) {
         return <Loader
@@ -216,6 +220,7 @@ const Series = ({ data }: SeriesProps) => {
                     if (videoRef.current && !currentPositionUpdated) {
                         videoRef.current.currentTime = data.media.currentTime;
                         setCurrentPositionUpdated(true);
+                        setUpdateEnabled(true);
                     }
                 }
 
@@ -226,6 +231,16 @@ const Series = ({ data }: SeriesProps) => {
                         videoRef.current.requestFullscreen();
                     }
                     setVideoOverlayVisible(false);
+                }
+
+                const onErrorHandler = (e: React.SyntheticEvent) => {
+
+                    if (videoRef.current?.networkState === 3) {
+                        setUpdateEnabled(false);
+                        if (data.media.currentSeason && data.media.currentEpisode) {
+                            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch);
+                        }
+                    }
                 }
 
                 return (<React.Fragment><Header title={data.searchResult.name} />
@@ -248,7 +263,7 @@ const Series = ({ data }: SeriesProps) => {
                         ( {qualityList.map(x => x.label).join(', ').toString()} )
                         </span>
                         <div className="video-container">
-                            <video className="video" ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
+                            <video className="video" ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} onError={onErrorHandler} controls src={stream.urL2}>
                                 <source src={stream.urL2} type="video/mp4" />
                             </video>
                             {videoOverlayVisible && <div className="video-overlay">Next video will start in {countDown} seconds...</div>}

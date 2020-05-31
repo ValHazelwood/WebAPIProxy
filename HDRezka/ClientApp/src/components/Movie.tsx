@@ -22,17 +22,21 @@ const Movie = ({ data }: MovieProps) => {
 
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
 
+    const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
+
     useEffect(() => {
         const interval = setInterval(() => {
 
-            ActionService.updateMediaDataHandler(data, dispatch);
+            if (updateEnabled) {
+                ActionService.updateMediaDataHandler(data, dispatch);
+            }
 
         }, 30000);
 
         return () => {
             clearInterval(interval);
         };
-    }, [data, dispatch]);
+    }, [data, dispatch, updateEnabled]);
 
     console.log("Movie rendered");
 
@@ -75,6 +79,7 @@ const Movie = ({ data }: MovieProps) => {
                 if (videoRef.current && !currentPositionUpdated) {
                     videoRef.current.currentTime = data.media.currentTime;
                     setCurrentPositionUpdated(true);
+                    setUpdateEnabled(true);
                 }
             }
 
@@ -83,6 +88,14 @@ const Movie = ({ data }: MovieProps) => {
                     videoRef.current.webkitRequestFullScreen();
                 } else if (videoRef.current && videoRef.current.requestFullscreen) {
                     videoRef.current.requestFullscreen();
+                }
+            }
+
+            const onErrorHandler = (e: React.SyntheticEvent) => {
+
+                if (videoRef.current?.networkState === 3) {
+                    setUpdateEnabled(false);
+                    ActionService.selectSearchResultHandler(data.searchResult, dispatch);
                 }
             }
 
@@ -95,7 +108,7 @@ const Movie = ({ data }: MovieProps) => {
                     <span>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
                     ( {qualityList.map(x => x.label).join(', ').toString()} )
                     </span>
-                    <video ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} controls src={stream.urL2}>
+                    <video ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} onError={onErrorHandler} controls src={stream.urL2}>
                         <source src={stream.urL2} type="video/mp4" />
                     </video>
                 </div>
