@@ -5,6 +5,7 @@ import { ContextApp } from "../store/reducer";
 import ActionService from "../store/ActionService";
 import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
+import useEventListener from '@use-it/event-listener';
 
 interface MovieProps {
     data: MediaData;
@@ -37,6 +38,21 @@ const Movie = ({ data }: MovieProps) => {
             clearInterval(interval);
         };
     }, [data, dispatch, updateEnabled]);
+
+
+    const setFullScreen = () => {
+        if (videoRef.current && videoRef.current.webkitRequestFullScreen) {
+            videoRef.current.webkitRequestFullScreen();
+        } else if (videoRef.current && videoRef.current.requestFullscreen) {
+            videoRef.current.requestFullscreen();
+        }
+    }
+
+    useEventListener('keydown', (event: React.KeyboardEvent) => {
+        if (event.which === 403) {
+            setFullScreen();
+        }
+    });
 
     console.log("Movie rendered");
 
@@ -83,14 +99,6 @@ const Movie = ({ data }: MovieProps) => {
                 }
             }
 
-            const fullScreenHandler = (e: React.MouseEvent) => {
-                if (videoRef.current && videoRef.current.webkitRequestFullScreen) {
-                    videoRef.current.webkitRequestFullScreen();
-                } else if (videoRef.current && videoRef.current.requestFullscreen) {
-                    videoRef.current.requestFullscreen();
-                }
-            }
-
             const onErrorHandler = (e: React.SyntheticEvent) => {
 
                 if (videoRef.current?.networkState === 3) {
@@ -101,7 +109,7 @@ const Movie = ({ data }: MovieProps) => {
 
             return (<React.Fragment><Header title={data.searchResult.name} />
                 <div className="mediaInfo">
-                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={fullScreenHandler}>Full screen</button></p>
+                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={() => setFullScreen()}>Full screen</button></p>
                     <span>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />&nbsp;
                     ( {translationsList.map(x => x.label).join(', ').toString()} )
                     </span>
@@ -112,7 +120,7 @@ const Movie = ({ data }: MovieProps) => {
                         <source src={stream.urL2} type="video/mp4" />
                     </video>
                 </div>
-            </React.Fragment>);
+            </React.Fragment >);
         }
     }
 

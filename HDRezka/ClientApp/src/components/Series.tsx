@@ -7,6 +7,7 @@ import Dropdown, { Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import useEventListener from '@use-it/event-listener';
 
 interface SeriesProps {
     data: MediaData;
@@ -47,6 +48,20 @@ const Series = ({ data }: SeriesProps) => {
             clearInterval(interval);
         };
     }, [data, dispatch, updateEnabled]);
+
+    const setFullScreen = () => {
+        if (videoRef.current && videoRef.current.webkitRequestFullScreen) {
+            videoRef.current.webkitRequestFullScreen();
+        } else if (videoRef.current && videoRef.current.requestFullscreen) {
+            videoRef.current.requestFullscreen();
+        }
+    }
+
+    useEventListener('keydown', (event: React.KeyboardEvent) => {
+        if (event.which === 403) {
+            setFullScreen();
+        }
+    });
 
     if (seriesLoading) {
         return <Loader
@@ -225,11 +240,7 @@ const Series = ({ data }: SeriesProps) => {
                 }
 
                 const fullScreenHandler = (e: React.MouseEvent) => {
-                    if (videoRef.current && videoRef.current.webkitRequestFullScreen) {
-                        videoRef.current.webkitRequestFullScreen();
-                    } else if (videoRef.current && videoRef.current.requestFullscreen) {
-                        videoRef.current.requestFullscreen();
-                    }
+                    setFullScreen();
                     setVideoOverlayVisible(false);
                 }
 
