@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import "../App.css";
-import Search from "./Search";
+import Menu from "./Menu";
 import SearchList from "./SearchList";
 import { ContextApp } from "../store/reducer";
 import Movie from "./Movie";
@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="App">
-      <Search />
+      <Menu />
       {displayResults}
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { useRef, MouseEvent, useContext } from "react";
 import { ContextApp } from "../store/reducer";
 import ActionService from "../store/ActionService";
-import { Mode } from "../store/types";
 
 const Search = () => {
 
@@ -19,18 +18,11 @@ const Search = () => {
   console.log("Search rendered");
 
   return (
-    <header className="App-header">
-      <div className="buttons" >
-        <button onClick={() => { ActionService.changeMode(Mode.Result, dispatch) }} >Search results</button>
-        <button onClick={() => { ActionService.changeMode(Mode.Media, dispatch) }} >Watch</button>
-        <button onClick={() => { ActionService.changeMode(Mode.History, dispatch) }} >History</button>
-        <form className="search">
-          <input ref={inputRef} type="text"
-          />
-          <input onClick={callSearchFunction} type="submit" value="SEARCH" />
-        </form>
-      </div>
-    </header>
+    <form className="search">
+      <input ref={inputRef} type="text"
+      />
+      <input onClick={callSearchFunction} type="submit" value="SEARCH" />
+    </form>
   );
 };
 

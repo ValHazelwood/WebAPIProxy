@@ -49,8 +49,19 @@ const Movie = ({ data }: MovieProps) => {
     }
 
     useEventListener('keydown', (event: React.KeyboardEvent) => {
-        if (event.which === 403) {
-            setFullScreen();
+
+        switch (event.which) {
+            case 403:
+                setFullScreen();
+                break;
+
+            case 404:
+                setUpdateEnabled(false);
+                ActionService.selectSearchResultHandler(data.searchResult, dispatch);
+                break;
+
+            default:
+                break;
         }
     });
 

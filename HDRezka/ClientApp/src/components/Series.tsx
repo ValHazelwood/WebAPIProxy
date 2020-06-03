@@ -57,9 +57,29 @@ const Series = ({ data }: SeriesProps) => {
         }
     }
 
+    const exitFullScreen = () => {
+        if (document.webkitIsFullScreen && document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        } else if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+
     useEventListener('keydown', (event: React.KeyboardEvent) => {
-        if (event.which === 403) {
-            setFullScreen();
+        switch (event.which) {
+            case 403:
+                setFullScreen();
+                break;
+
+            case 404:
+                setUpdateEnabled(false);
+                if (data.media.currentSeason && data.media.currentEpisode) {
+                    ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch);
+                }
+                break;
+
+            default:
+                break;
         }
     });
 
@@ -148,11 +168,6 @@ const Series = ({ data }: SeriesProps) => {
                     }
                 }
 
-                const nextSeasonSelected = (e: React.MouseEvent) => {
-
-                    nextSeasonSelectedHandler();
-                }
-
                 const onEpisodeSelected = (option: Option) => {
 
                     if (data.media.currentSeason) {
@@ -177,10 +192,6 @@ const Series = ({ data }: SeriesProps) => {
                         let nextEpisode = episodesList[currentEpisodeIndex + 1].value;
                         ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, parseInt(nextEpisode), data, dispatch);
                     }
-                }
-
-                const nextEpisodeSelected = (e: React.MouseEvent) => {
-                    nextEpisodeSelectedHandler();
                 }
 
                 const onQualitySelected = (option: Option) => {
@@ -221,11 +232,7 @@ const Series = ({ data }: SeriesProps) => {
                         data.media.currentTime = videoRef.current.currentTime;
 
                         if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < countdownStartTimeout) {
-                            if (document.webkitIsFullScreen && document.webkitCancelFullScreen) {
-                                document.webkitCancelFullScreen();
-                            } else if (document.fullscreenElement && document.exitFullscreen) {
-                                document.exitFullscreen();
-                            }
+                            exitFullScreen();
                             nextVideoPlayHandler();
                         }
                     }
@@ -262,12 +269,12 @@ const Series = ({ data }: SeriesProps) => {
                         </span>
                         <span>Season: <button onClick={prevSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[0].value)}>&lt;</button>&nbsp;
                             <Dropdown className="seasonSelect" options={seasonsList} onChange={onSeasonSelected} value={seasonDefaultOption} />&nbsp;
-                            <button onClick={nextSeasonSelected} disabled={data.media.currentSeason === parseInt(seasonsList[seasonsList.length - 1].value)}>&gt;</button>&nbsp;
+                            <button onClick={() => nextSeasonSelectedHandler()} disabled={data.media.currentSeason === parseInt(seasonsList[seasonsList.length - 1].value)}>&gt;</button>&nbsp;
                         ( {seasonsList.map(x => x.label).join(', ').toString()} )
                         </span>
                         <span>Episode: <button onClick={prevEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[0].value)}>&lt;</button>&nbsp;
                             <Dropdown className="episodeSelect" options={episodesList} onChange={onEpisodeSelected} value={episodeDefaultOption} />&nbsp;
-                            <button onClick={nextEpisodeSelected} disabled={data.media.currentEpisode === parseInt(episodesList[episodesList.length - 1].value)}>&gt;</button>&nbsp;
+                            <button onClick={() => nextEpisodeSelectedHandler()} disabled={data.media.currentEpisode === parseInt(episodesList[episodesList.length - 1].value)}>&gt;</button>&nbsp;
                         ( {episodesList.map(x => x.label).join(', ').toString()} )
                         </span>
                         <span>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
