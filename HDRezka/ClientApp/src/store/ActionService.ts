@@ -59,6 +59,34 @@ const ActionService = {
         });
       });
   },
+  mediaRefreshHandler: function (
+    data: MediaData,
+    dispatch: React.Dispatch<any>
+  ) {
+    dispatch({
+      type: "MEDIA_REQUEST",
+    });
+
+    FetchService.post("media", JSON.stringify(data.searchResult.url))
+      .then((response) => response.json() as Promise<Media>)
+      .then((result) => {
+        result.currentQualityId = data.media.currentQualityId;
+        result.currentTime = data.media.currentTime;
+        dispatch({
+          type: "MEDIA_REFRESH_SUCCESS",
+          media: {
+            searchResult: data.searchResult,
+            media: result,
+          },
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: "MEDIA_FAILURE",
+          error: error,
+        });
+      });
+  },
   selectSeriesTranslationHandler: function (
     id: number,
     translationId: number,
@@ -117,7 +145,8 @@ const ActionService = {
     season: number,
     episode: number,
     mediaData: MediaData,
-    dispatch: React.Dispatch<any>
+    dispatch: React.Dispatch<any>,
+    useCurrentTime?: boolean
   ) {
     dispatch({
       type: "SERIES_REQUEST",
@@ -150,7 +179,7 @@ const ActionService = {
           currentEpisode: episode,
           translations: translations,
           currentQualityId: mediaData.media.currentQualityId,
-          currentTime: 0,
+          currentTime: useCurrentTime ? mediaData.media.currentTime : 0,
         };
 
         dispatch({

@@ -114,7 +114,7 @@ const Movie = ({ data }: MovieProps) => {
 
                 if (videoRef.current?.networkState === 3) {
                     setUpdateEnabled(false);
-                    ActionService.selectSearchResultHandler(data.searchResult, dispatch);
+                    ActionService.mediaRefreshHandler(data, dispatch);
                 }
             }
 

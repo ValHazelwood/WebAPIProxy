@@ -74,7 +74,7 @@ const Series = ({ data }: SeriesProps) => {
             case 404:
                 setUpdateEnabled(false);
                 if (data.media.currentSeason && data.media.currentEpisode) {
-                    ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch);
+                    ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch, true);
                 }
                 break;
 
@@ -256,7 +256,7 @@ const Series = ({ data }: SeriesProps) => {
                     if (videoRef.current?.networkState === 3) {
                         setUpdateEnabled(false);
                         if (data.media.currentSeason && data.media.currentEpisode) {
-                            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch);
+                            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch, true);
                         }
                     }
                 }

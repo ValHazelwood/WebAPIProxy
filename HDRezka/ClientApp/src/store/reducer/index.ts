@@ -22,6 +22,7 @@ type Action =
   | { type: "SEARCH_FAILURE"; error: string }
   | { type: "MEDIA_FAILURE"; error: string }
   | { type: "MEDIA_UPDATE"; media: MediaData }
+  | { type: "MEDIA_REFRESH_SUCCESS"; media: MediaData }
   | { type: "HISTORY_UPDATE"; media: MediaData }
   | { type: "FROM_HISTORY"; media: MediaData }
   | { type: "CHANGE_MODE"; mode: Mode }
@@ -54,6 +55,13 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
     case "MEDIA_REQUEST":
       return { ...state, loading: true };
     case "MEDIA_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        mode: Mode.Media,
+        mediaData: action.media,
+      };
+    case "MEDIA_REFRESH_SUCCESS":
       return {
         ...state,
         loading: false,
