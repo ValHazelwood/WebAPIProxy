@@ -65,6 +65,13 @@ const Series = ({ data }: SeriesProps) => {
         }
     }
 
+    const refreshLinksHandler = () => {
+        setUpdateEnabled(false);
+        if (data.media.currentSeason && data.media.currentEpisode) {
+            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch, true);
+        }
+    }
+
     useEventListener('keydown', (event: React.KeyboardEvent) => {
         switch (event.which) {
             case 403:
@@ -72,10 +79,7 @@ const Series = ({ data }: SeriesProps) => {
                 break;
 
             case 404:
-                setUpdateEnabled(false);
-                if (data.media.currentSeason && data.media.currentEpisode) {
-                    ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch, true);
-                }
+                refreshLinksHandler();
                 break;
 
             default:
@@ -254,16 +258,14 @@ const Series = ({ data }: SeriesProps) => {
                 const onErrorHandler = (e: React.SyntheticEvent) => {
 
                     if (videoRef.current?.networkState === 3) {
-                        setUpdateEnabled(false);
-                        if (data.media.currentSeason && data.media.currentEpisode) {
-                            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch, true);
-                        }
+                        refreshLinksHandler();
                     }
                 }
 
                 return (<React.Fragment><Header title={data.searchResult.name} />
                     <div className="mediaInfo">
-                        <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={fullScreenHandler}>Full screen</button></p>
+                        <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={fullScreenHandler}>Full screen (A)</button>&nbsp;
+                        <button onClick={refreshLinksHandler}>Refresh (B)</button></p>
                         <span>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />&nbsp;
                         ( {translationsList.map(x => x.label).join(', ').toString()} )
                         </span>

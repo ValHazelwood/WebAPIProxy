@@ -48,6 +48,11 @@ const Movie = ({ data }: MovieProps) => {
         }
     }
 
+    const refreshLinksHandler = () => {
+        setUpdateEnabled(false);
+        ActionService.mediaRefreshHandler(data, dispatch);
+    }
+
     useEventListener('keydown', (event: React.KeyboardEvent) => {
 
         switch (event.which) {
@@ -56,8 +61,7 @@ const Movie = ({ data }: MovieProps) => {
                 break;
 
             case 404:
-                setUpdateEnabled(false);
-                ActionService.selectSearchResultHandler(data.searchResult, dispatch);
+                refreshLinksHandler();
                 break;
 
             default:
@@ -113,14 +117,14 @@ const Movie = ({ data }: MovieProps) => {
             const onErrorHandler = (e: React.SyntheticEvent) => {
 
                 if (videoRef.current?.networkState === 3) {
-                    setUpdateEnabled(false);
-                    ActionService.mediaRefreshHandler(data, dispatch);
+                    refreshLinksHandler();
                 }
             }
 
             return (<React.Fragment><Header title={data.searchResult.name} />
                 <div className="mediaInfo">
-                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={() => setFullScreen()}>Full screen</button></p>
+                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={() => setFullScreen()}>Full screen (A)</button>&nbsp;
+                    <button onClick={refreshLinksHandler}>Refresh (B)</button></p>
                     <span>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />&nbsp;
                     ( {translationsList.map(x => x.label).join(', ').toString()} )
                     </span>
