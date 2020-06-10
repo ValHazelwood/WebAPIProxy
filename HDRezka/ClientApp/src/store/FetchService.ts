@@ -1,5 +1,4 @@
-
-const API_URL: string = "http://192.168.1.252:5000/api/";
+const API_URL: string = "/api/";
 
 const FetchService = {
   post: function (url: string, requestBody: string) {
@@ -15,7 +14,7 @@ const FetchService = {
     };
 
     return fetch(API_URL + url, requestOptions);
-  }
+  },
 };
 
 export default FetchService;
