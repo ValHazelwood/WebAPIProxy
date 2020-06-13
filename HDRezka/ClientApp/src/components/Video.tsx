@@ -2,31 +2,26 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import useEventListener from '@use-it/event-listener';
 import { MediaData } from "../store/types";
 import ActionService from "../store/ActionService";
-import MediaService from "../store/MediaService";
 import { ContextApp } from "../store/reducer";
 
-interface SeriesVideoProps {
+interface VideoProps {
     data: MediaData;
-    streamUrl: string
+    streamUrl: string;
+    startCountDownHandler?: (videoRef: React.RefObject<HTMLVideoElement>) => void;
+    setVideoOverlayVisible?: (flag: boolean) => void;
+    refreshLinks: () => void;
+    children?: React.ReactNode;
 }
 
-const SeriesVideo = ({ data, streamUrl }: SeriesVideoProps) => {
+const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible, refreshLinks, children }: VideoProps) => {
 
-    console.log("SeriesVideo rendered");
-
-    const countdownTimeout: number = 10;
-
-    const countdownStartTimeout: number = 30;
+    console.log("Video rendered");
 
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { dispatch } = useContext(ContextApp);
 
     const [currentPositionUpdated, setCurrentPositionUpdated] = useState<boolean>(false);
-
-    const [videoOverlayVisible, setVideoOverlayVisible] = useState<boolean>(false);
-
-    const [countDown, setCountDown] = useState<number>(countdownTimeout);
 
     const [updateEnabled, setUpdateEnabled] = useState<boolean>(true);
 
@@ -52,19 +47,9 @@ const SeriesVideo = ({ data, streamUrl }: SeriesVideoProps) => {
         }
     }
 
-    const exitFullScreen = () => {
-        if (document.webkitIsFullScreen && document.webkitCancelFullScreen) {
-            document.webkitCancelFullScreen();
-        } else if (document.fullscreenElement && document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-    }
-
     const refreshLinksHandler = () => {
         setUpdateEnabled(false);
-        if (data.media.currentSeason && data.media.currentEpisode) {
-            ActionService.selectSeriesEpisodeHandler(data.media.id, data.media.currentTranslationId, data.media.currentSeason, data.media.currentEpisode, data, dispatch, true);
-        }
+        refreshLinks();
     }
 
     useEventListener('keydown', (event: React.KeyboardEvent) => {
@@ -82,48 +67,6 @@ const SeriesVideo = ({ data, streamUrl }: SeriesVideoProps) => {
         }
     });
 
-    const videoPlayDelayHandler = (data: MediaData, action: (data: MediaData, dispatch: React.Dispatch<any>) => void) => {
-
-        let countdownInterval = setInterval(() => { setCountDown(countDown => countDown - 1) }, 1000);
-
-        setVideoOverlayVisible(true);
-        setTimeout(() => {
-            action(data, dispatch);
-            setVideoOverlayVisible(false);
-            clearInterval(countdownInterval);
-            setCountDown(countdownTimeout);
-        }, countdownTimeout * 1000);
-
-    }
-
-    const nextVideoPlayHandler = () => {
-
-        let translation = data.media.translations.find(x => x.id === data.media.currentTranslationId);
-
-        let season = translation?.seasons?.find(x => x.id === data.media.currentSeason);
-
-        if (data.media.currentEpisode !== season?.episodes[season.episodes.length - 1]) {
-
-            videoPlayDelayHandler(data, MediaService.nextEpisodeSelectedHandler);
-
-        } else {
-
-            videoPlayDelayHandler(data, MediaService.nextSeasonSelectedHandler);
-        }
-
-    }
-
-    const onTimeUpdatedHandler = (e: React.SyntheticEvent) => {
-
-        if (videoRef.current && currentPositionUpdated) {
-            data.media.currentTime = videoRef.current.currentTime;
-
-            if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < countdownStartTimeout) {
-                exitFullScreen();
-                nextVideoPlayHandler();
-            }
-        }
-    }
 
     const onCanPlayHandler = (e: React.SyntheticEvent) => {
         if (videoRef.current && !currentPositionUpdated) {
@@ -135,7 +78,15 @@ const SeriesVideo = ({ data, streamUrl }: SeriesVideoProps) => {
 
     const fullScreenHandler = (e: React.MouseEvent) => {
         setFullScreen();
-        setVideoOverlayVisible(false);
+        typeof setVideoOverlayVisible === "function" && setVideoOverlayVisible(false);
+    }
+
+    const onTimeUpdatedHandler = (e: React.SyntheticEvent) => {
+
+        if (videoRef.current && currentPositionUpdated) {
+            data.media.currentTime = videoRef.current.currentTime;
+            typeof startCountDownHandler === "function" && startCountDownHandler(videoRef);
+        }
     }
 
     const onErrorHandler = (e: React.SyntheticEvent) => {
@@ -153,9 +104,9 @@ const SeriesVideo = ({ data, streamUrl }: SeriesVideoProps) => {
             <video className="video" ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} onError={onErrorHandler} controls src={streamUrl}>
                 <source src={streamUrl} type="video/mp4" />
             </video>
-            {videoOverlayVisible && <div className="video-overlay">Next video will start in {countDown} seconds...</div>}
+            {children}
         </div>
     </React.Fragment>);
 }
 
-export default SeriesVideo;
+export default Video;
