@@ -3,9 +3,9 @@ import { MediaData } from "../store/types";
 import Header from "./Header";
 import { ContextApp } from "../store/reducer";
 import ActionService from "../store/ActionService";
-import Dropdown, { Option } from 'react-dropdown';
-import 'react-dropdown/style.css';
 import useEventListener from '@use-it/event-listener';
+import Translation from "./Translation";
+import Quality from "./Quality";
 
 interface MovieProps {
     data: MediaData;
@@ -71,33 +71,23 @@ const Movie = ({ data }: MovieProps) => {
 
     console.log("Movie rendered");
 
-    console.log(data);
+    const onTranslationSelected = (value: string) => {
+
+        setCurrentTranslationId(parseInt(value));
+    }
+
+    const onQualitySelected = (value: string) => {
+
+        data.media.currentQualityId = value;
+        setCurrentQualityId(value);
+    }
 
     let translation = data.media.translations.find(x => x.id === currentTranslationId);
-
-    let translationsList = data.media.translations.map(x => ({ value: x.id.toString(), label: x.name }));
-
-    let translationDefaultOption = translationsList.find(x => x.value === currentTranslationId?.toString());
 
     if (translation) {
         let stream = translation.cdnStreams.find(x => x.quality === currentQualityId);
 
-        let qualityList = translation.cdnStreams.map(x => ({ value: x.quality, label: x.quality }));
-
-        let qualityDefaultOption = qualityList.find(x => x.value === currentQualityId);
-
         if (stream) {
-
-            const onTranslationSelected = (option: Option) => {
-
-                setCurrentTranslationId(parseInt(option.value));
-            }
-
-            const onQualitySelected = (option: Option) => {
-
-                data.media.currentQualityId = option.value;
-                setCurrentQualityId(option.value);
-            }
 
             const onTimeUpdatedHandler = (e: React.SyntheticEvent) => {
 
@@ -123,13 +113,11 @@ const Movie = ({ data }: MovieProps) => {
 
             return (<React.Fragment><Header title={data.searchResult.name} />
                 <div className="mediaInfo">
-                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} &nbsp;<button onClick={() => setFullScreen()}>Full screen (A)</button>&nbsp;
-                    <button onClick={refreshLinksHandler}>Refresh (B)</button></p>
-                    <span>Translation: <Dropdown className="translationSelect" options={translationsList} onChange={onTranslationSelected} value={translationDefaultOption} />&nbsp;
-                    ( {translationsList.map(x => x.label).join(', ').toString()} )
-                    </span>
-                    <span>Quality: <Dropdown className="qualitySelect" options={qualityList} onChange={onQualitySelected} value={qualityDefaultOption} />&nbsp;
-                    ( {qualityList.map(x => x.label).join(', ').toString()} )
+                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} </p>
+                    <Translation data={data} translationSelected={onTranslationSelected} />
+                    <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
+                    <span>
+                        <button onClick={() => setFullScreen()}>Full screen (A)</button>&nbsp;<button onClick={refreshLinksHandler}>Refresh (B)</button>
                     </span>
                     <video ref={videoRef} autoPlay onCanPlay={onCanPlayHandler} onTimeUpdate={onTimeUpdatedHandler} onError={onErrorHandler} controls src={stream.urL2}>
                         <source src={stream.urL2} type="video/mp4" />

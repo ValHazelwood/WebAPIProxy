@@ -146,7 +146,7 @@ const SeriesVideo = ({ data, streamUrl }: SeriesVideoProps) => {
     }
 
     return (<React.Fragment>
-        <span>
+        <span className="video-buttons">
             <button onClick={fullScreenHandler}>Full screen (A)</button>&nbsp;<button onClick={refreshLinksHandler}>Refresh (B)</button>
         </span>
         <div className="video-container">

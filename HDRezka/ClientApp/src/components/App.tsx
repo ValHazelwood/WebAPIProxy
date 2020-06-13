@@ -9,6 +9,7 @@ import History from "./History";
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Mode } from "../store/types";
+import 'react-dropdown/style.css';
 
 function App() {
 
