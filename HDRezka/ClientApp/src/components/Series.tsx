@@ -10,6 +10,7 @@ import Video from "./Video";
 import Translation from "./Translation";
 import Quality from "./Quality";
 import SeriesNav from "./SeriesNav";
+import MediaInfo from "./MediaInfo";
 
 interface SeriesProps {
     data: MediaData;
@@ -122,7 +123,7 @@ const Series = ({ data }: SeriesProps) => {
 
                 return (<React.Fragment><Header title={data.searchResult.name} />
                     <div className="mediaInfo">
-                        <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} </p>
+                        <MediaInfo info={data.searchResult} />
                         <Translation data={data} translationSelected={onTranslationSelected} />
                         <SeriesNav data={data} />
                         <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />

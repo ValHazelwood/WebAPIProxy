@@ -17,6 +17,8 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
 
     console.log("Video rendered");
 
+    const positionAutoSaveInterval: number = 30;
+
     const videoRef = useRef<HTMLVideoElement>(null);
 
     const { dispatch } = useContext(ContextApp);
@@ -32,7 +34,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
                 ActionService.updateMediaDataHandler(data, dispatch);
             }
 
-        }, 30000);
+        }, positionAutoSaveInterval * 1000);
 
         return () => {
             clearInterval(interval);

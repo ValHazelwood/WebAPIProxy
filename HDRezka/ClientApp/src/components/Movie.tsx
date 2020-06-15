@@ -6,6 +6,7 @@ import ActionService from "../store/ActionService";
 import Translation from "./Translation";
 import Quality from "./Quality";
 import Video from "./Video";
+import MediaInfo from "./MediaInfo";
 
 interface MovieProps {
     data: MediaData;
@@ -41,7 +42,7 @@ const Movie = ({ data }: MovieProps) => {
 
             return (<React.Fragment><Header title={data.searchResult.name} />
                 <div className="mediaInfo">
-                    <p>{data.searchResult.name} {data.searchResult.text} rating: {data.searchResult.rating} </p>
+                    <MediaInfo info={data.searchResult} />
                     <Translation data={data} translationSelected={onTranslationSelected} />
                     <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
                     <Video data={data} streamUrl={stream.urL2} refreshLinks={() => ActionService.mediaRefreshHandler(data, dispatch)} />
