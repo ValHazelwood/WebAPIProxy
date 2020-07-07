@@ -96,17 +96,31 @@ namespace HDRezka.Helpers
             var fields = new List<KeyValuePair<string, string>>()
             {
                     new KeyValuePair<string, string>("id", request.Id.ToString()),
-                    new KeyValuePair<string, string>("translator_id", request.TranslationId.ToString())                    
+                    new KeyValuePair<string, string>("translator_id", request.TranslationId.ToString())
             };
 
             if (request is CDNSeriesRequest seriesRequest)
             {
                 actionType = SeriesActionType.GetStream;
-                
+
                 var extraFields = new List<KeyValuePair<string, string>>()
                 {
                     new KeyValuePair<string, string>("season", seriesRequest.Season.ToString()),
                     new KeyValuePair<string, string>("episode", seriesRequest.Episode.ToString())
+                };
+
+                fields.AddRange(extraFields);
+            }
+
+            if (request is MovieRequest movieRequest)
+            {
+                actionType = SeriesActionType.GetMovie;
+
+                var extraFields = new List<KeyValuePair<string, string>>()
+                {
+                    new KeyValuePair<string, string>("is_camrip", movieRequest.IsCamRip.ToString()),
+                    new KeyValuePair<string, string>("is_ads", movieRequest.IsAds.ToString()),
+                    new KeyValuePair<string, string>("is_director", movieRequest.IsDirector.ToString())
                 };
 
                 fields.AddRange(extraFields);

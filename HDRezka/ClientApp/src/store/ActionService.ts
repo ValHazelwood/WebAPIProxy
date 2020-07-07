@@ -194,6 +194,59 @@ const ActionService = {
         });
       });
   },
+  selectMovieTranslationHandler: function (
+    id: number,
+    translationId: number,
+    mediaData: MediaData,
+    dispatch: React.Dispatch<any>,
+    useCurrentTime?: boolean
+  ) {
+    dispatch({
+      type: "MOVIE_REQUEST",
+    });
+
+    FetchService.post(
+      "movie",
+      `{ "id":${id}, "translationId":${translationId} }`
+    )
+      .then((response) => response.json() as Promise<Stream[]>)
+      .then((result) => {
+        let translation = mediaData.media.translations.find(
+          (x) => x.id === translationId
+        );
+
+        let translations: Translation[] = mediaData.media.translations.filter(
+          (x) => x.id !== translationId
+        );
+
+        if (translation) {
+          translation.cdnStreams = result;
+          translations.push(translation);
+        }
+
+        let media: Media = {
+          id: id,
+          currentTranslationId: translationId,
+          type: 0,
+          currentEpisode: null,
+          currentSeason: null,
+          translations: translations,
+          currentQualityId: mediaData.media.currentQualityId,
+          currentTime: useCurrentTime ? mediaData.media.currentTime : 0,
+        };
+
+        dispatch({
+          type: "MOVIE_SUCCESS",
+          media: { searchResult: mediaData.searchResult, media: media },
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: "MOVIE_FAILURE",
+          error: error,
+        });
+      });
+  },
   updateMediaDataHandler: function (
     data: MediaData,
     dispatch: React.Dispatch<any>

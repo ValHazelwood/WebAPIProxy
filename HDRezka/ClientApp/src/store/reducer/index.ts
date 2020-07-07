@@ -16,9 +16,11 @@ type Action =
   | { type: "SEARCH_REQUEST" }
   | { type: "MEDIA_REQUEST" }
   | { type: "SERIES_REQUEST" }
+  | { type: "MOVIE_REQUEST" }
   | { type: "SEARCH_SUCCESS"; results: SearchResult[] }
   | { type: "MEDIA_SUCCESS"; media: MediaData }
   | { type: "SERIES_SUCCESS"; media: MediaData }
+  | { type: "MOVIE_SUCCESS"; media: MediaData }
   | { type: "SEARCH_FAILURE"; error: string }
   | { type: "MEDIA_FAILURE"; error: string }
   | { type: "MEDIA_UPDATE"; media: MediaData }
@@ -27,7 +29,8 @@ type Action =
   | { type: "FROM_HISTORY"; media: MediaData }
   | { type: "CHANGE_MODE"; mode: Mode }
   | { type: "HISTORY_CLEAR" }
-  | { type: "SERIES_FAILURE"; error: string };
+  | { type: "SERIES_FAILURE"; error: string }
+  | { type: "MOVIE_FAILURE"; error: string };
 
 const initialState: ApplicationState = {
   loading: false,
@@ -80,6 +83,17 @@ function reducer(state: ApplicationState, action: Action): ApplicationState {
         mediaData: action.media,
       };
     case "SERIES_FAILURE":
+      return { ...state, seriesLoading: false, errorMessage: action.error };
+    case "MOVIE_REQUEST":
+      return { ...state, seriesLoading: true };
+    case "MOVIE_SUCCESS":
+      return {
+        ...state,
+        seriesLoading: false,
+        mode: Mode.Media,
+        mediaData: action.media,
+      };
+    case "MOVIE_FAILURE":
       return { ...state, seriesLoading: false, errorMessage: action.error };
     case "MEDIA_UPDATE":
       return {

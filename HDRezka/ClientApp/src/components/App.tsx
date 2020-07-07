@@ -17,7 +17,7 @@ function App() {
 
   const { loading, errorMessage, mode, mediaData } = state;
 
-  let displayResults;
+  let displayResults: JSX.Element = <SearchList />;
 
   if (loading && !errorMessage) {
     displayResults = <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />;

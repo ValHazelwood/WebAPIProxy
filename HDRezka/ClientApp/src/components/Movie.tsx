@@ -7,6 +7,8 @@ import Translation from "./Translation";
 import Quality from "./Quality";
 import Video from "./Video";
 import MediaInfo from "./MediaInfo";
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 interface MovieProps {
     data: MediaData;
@@ -14,17 +16,26 @@ interface MovieProps {
 
 const Movie = ({ data }: MovieProps) => {
 
-    const { dispatch } = useContext(ContextApp);
+    const { state, dispatch } = useContext(ContextApp);
 
-    const [currentTranslationId, setCurrentTranslationId] = useState<number>(data.media.currentTranslationId);
+    const { seriesLoading } = state;
 
     const [currentQualityId, setCurrentQualityId] = useState<string>(data.media.currentQualityId);
+
+    if (seriesLoading) {
+        return <Loader
+            type="TailSpin"
+            color="#00BFFF"
+            height={100}
+            width={100}
+        />
+    }
 
     console.log("Movie rendered");
 
     const onTranslationSelected = (value: string) => {
 
-        setCurrentTranslationId(parseInt(value));
+        ActionService.selectMovieTranslationHandler(data.media.id, parseInt(value), data, dispatch);
     }
 
     const onQualitySelected = (value: string) => {
@@ -33,7 +44,11 @@ const Movie = ({ data }: MovieProps) => {
         setCurrentQualityId(value);
     }
 
-    let translation = data.media.translations.find(x => x.id === currentTranslationId);
+    const refreshLinks = () => {
+        ActionService.selectMovieTranslationHandler(data.media.id, data.media.currentTranslationId, data, dispatch, true);
+    }
+
+    let translation = data.media.translations.find(x => x.id === data.media.currentTranslationId);
 
     if (translation) {
         let stream = translation.cdnStreams.find(x => x.quality === currentQualityId);
@@ -45,7 +60,7 @@ const Movie = ({ data }: MovieProps) => {
                     <MediaInfo info={data.searchResult} />
                     <Translation data={data} translationSelected={onTranslationSelected} />
                     <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
-                    <Video data={data} streamUrl={stream.urL2} refreshLinks={() => ActionService.mediaRefreshHandler(data, dispatch)} />
+                    <Video data={data} streamUrl={stream.urL2} refreshLinks={refreshLinks} />
                 </div>
             </React.Fragment >);
         }
