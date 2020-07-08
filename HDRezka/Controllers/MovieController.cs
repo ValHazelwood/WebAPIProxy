@@ -12,10 +12,10 @@ namespace HDRezka.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        private readonly ILogger<SeriesController> _logger;
+        private readonly ILogger<MovieController> _logger;
         private readonly RezkaFetch _rezkaFetch;
 
-        public MovieController(ILogger<SeriesController> logger, IHttpClientFactory clientFactory)
+        public MovieController(ILogger<MovieController> logger, IHttpClientFactory clientFactory)
         {
             _logger = logger;
             _rezkaFetch = new RezkaFetch(clientFactory);

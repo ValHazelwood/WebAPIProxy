@@ -1,6 +1,6 @@
 ﻿namespace HDRezka.Types
 {
-    public class SeasonsRequest
+    public class MediaRequest
     {
         public int Id { get; set; }
 

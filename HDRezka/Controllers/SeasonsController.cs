@@ -22,7 +22,7 @@ namespace HDRezka.Controllers
         }
 
         [HttpPost]
-        public async Task<SeasonsData> Post(SeasonsRequest request)
+        public async Task<SeasonsData> Post(MediaRequest request)
         {
             var response = await _rezkaFetch.GetCDNSeries(request);
 

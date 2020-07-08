@@ -1,6 +1,6 @@
 namespace HDRezka.Types
 {
-    public class MovieRequest : SeasonsRequest
+    public class MovieRequest : MediaRequest
     {
         public int IsCamRip { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace HDRezka.Types
 {
-    public class CDNSeriesRequest : SeasonsRequest
+    public class CDNSeriesRequest : MediaRequest
     {
         public int? Season { get; set; }
 
