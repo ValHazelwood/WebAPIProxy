@@ -38,7 +38,7 @@ namespace HDRezka.Controllers
 
             media.Translations = media.Translations.Union(translations.Where(x => x.Id != media.CurrentTranslationId)).ToArray();
 
-            var defaultTranslation = translations.SingleOrDefault(x => x.Id == media.CurrentTranslationId);
+            var defaultTranslation = translations.FirstOrDefault(x => x.Id == media.CurrentTranslationId);
 
             if (defaultTranslation != null)
             {
