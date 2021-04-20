@@ -28,6 +28,6 @@ jobs:
     - name: 'Run Azure webapp FR deploy action using publish profile credentials'
       uses: azure/webapps-deploy@v2
       with:
-        app-name: hdrwebapp
+        app-name: hdrwebapp-fr
         publish-profile: ${{ secrets.azureWebAppPublishProfile }} 
         package: ${{env.DOTNET_ROOT}}/github 
