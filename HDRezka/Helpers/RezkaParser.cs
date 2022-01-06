@@ -84,7 +84,7 @@ namespace HDRezka.Helpers
         {
             var jObject = JObject.Parse(jsText);
 
-            return jObject["url"].ToString().Split(',').Select(x => GetCDNStream(x)).ToArray();
+            return DecodeCDNStreams(jObject["url"].ToString()).Split(',').Select(x => GetCDNStream(x)).ToArray();
         }
 
         /// <summary>
@@ -264,11 +264,11 @@ namespace HDRezka.Helpers
             const string bk2 = @"####^!!##!@@";
             const string bk3 = @"@@@@@!##!^^^";
             const string bk4 = @"$$!!@$$@^!@#$$@";
-            const string file3Separator = @"\/\/_\/\/";
+            const string file3Separator = @"//_//";
 
             var bkArray = new string[] { bk0, bk1, bk2, bk3, bk4 };
 
-            var result = encodedStr[2..];
+            var result = Regex.Unescape(encodedStr[2..]);
 
             for (var i = 4; i > -1; i--)
             {
