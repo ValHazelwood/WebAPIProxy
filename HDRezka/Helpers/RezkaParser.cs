@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using HDRezka.Types;
 using HtmlAgilityPack;
@@ -247,13 +248,51 @@ namespace HDRezka.Helpers
 
             var cdnUrls = jsText[startIndex..endIndex];
 
-            var cdnUrlsArray = cdnUrls.Split(',');
+            var cdnUrlsArray = DecodeCDNStreams(cdnUrls).Split(',');
 
             return cdnUrlsArray;
         }
         private static T ParseEnum<T>(string value)
         {
             return (T)Enum.Parse(typeof(T), value, true);
+        }
+
+        private static string DecodeCDNStreams(string encodedStr)
+        {
+            const string bk0 = @"$$#!!@#!@##";
+            const string bk1 = @"^^^!@##!!##";
+            const string bk2 = @"####^!!##!@@";
+            const string bk3 = @"@@@@@!##!^^^";
+            const string bk4 = @"$$!!@$$@^!@#$$@";
+            const string file3Separator = @"\/\/_\/\/";
+
+            var bkArray = new string[] { bk0, bk1, bk2, bk3, bk4 };
+
+            var result = encodedStr[2..];
+
+            for (var i = 4; i > -1; i--)
+            {
+                result = result.Replace(file3Separator + (bkArray[i]).EncodeBase64(), "");
+            }
+
+            result = result.DecodeBase64();           
+
+            return result;
+        }
+    }
+
+    public static class ExtensionMethods
+    {
+        public static string EncodeBase64(this string value)
+        {
+            var valueBytes = Encoding.UTF8.GetBytes(value);
+            return Convert.ToBase64String(valueBytes);
+        }
+
+        public static string DecodeBase64(this string value)
+        {
+            var valueBytes = System.Convert.FromBase64String(value);
+            return Encoding.UTF8.GetString(valueBytes);
         }
     }
 }
