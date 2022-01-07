@@ -168,6 +168,20 @@ namespace HDRezka.Helpers
             }
         }
 
+        public static string GetFavsId(HtmlDocument htmlDoc)
+        {
+            var favsNode = htmlDoc.DocumentNode.SelectSingleNode("//input[contains(@id, 'ctrl_favs')]");
+
+            if (favsNode != null)
+            {
+                return favsNode.Attributes["value"].Value;
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
         private static CDNStream[] GetCDNStreamsFromDataAttribute(HtmlNode htmlNode)
         {
             var dataAttribute = htmlNode.Attributes.SingleOrDefault(k => k.Name == "data-cdn_url");
@@ -177,7 +191,7 @@ namespace HDRezka.Helpers
                 return new CDNStream[0];
             }
 
-            return dataAttribute.Value.Split(",").Select(t => GetCDNStream(t)).ToArray();
+            return DecodeCDNStreams(dataAttribute.Value).Split(",").Select(t => GetCDNStream(t)).ToArray();
         }
 
         private static Media GetMedia(string jsText)

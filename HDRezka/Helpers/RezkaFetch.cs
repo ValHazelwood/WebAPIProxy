@@ -96,7 +96,8 @@ namespace HDRezka.Helpers
             var fields = new List<KeyValuePair<string, string>>()
             {
                     new KeyValuePair<string, string>("id", request.Id.ToString()),
-                    new KeyValuePair<string, string>("translator_id", request.TranslationId.ToString())
+                    new KeyValuePair<string, string>("translator_id", request.TranslationId.ToString()),
+                    new KeyValuePair<string, string>("favs", request.FavsId)
             };
 
             if (request is CDNSeriesRequest seriesRequest)

@@ -36,7 +36,11 @@ namespace HDRezka.Controllers
 
             var translations = RezkaParser.GetTranslations(htmlDocument);
 
+            var favsId = RezkaParser.GetFavsId(htmlDocument);
+
             media.Translations = media.Translations.Union(translations.Where(x => x.Id != media.CurrentTranslationId)).ToArray();
+
+            media.FavsId = favsId;
 
             var defaultTranslation = translations.FirstOrDefault(x => x.Id == media.CurrentTranslationId);
 
@@ -47,7 +51,7 @@ namespace HDRezka.Controllers
 
             if (media.Type == MediaType.Series)
             {
-                var seriesJsText = await _rezkaFetch.GetCDNSeries(new MediaRequest { Id = media.Id, TranslationId = media.CurrentTranslationId });
+                var seriesJsText = await _rezkaFetch.GetCDNSeries(new MediaRequest { Id = media.Id, TranslationId = media.CurrentTranslationId, FavsId = media.FavsId });
 
                 media.Translations[0].Seasons = RezkaParser.GetSeasons(seriesJsText).Seasons;
             }

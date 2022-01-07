@@ -5,5 +5,7 @@
         public int Id { get; set; }
 
         public int TranslationId { get; set; }
+
+        public string FavsId { get; set; }
     }
 }

@@ -18,5 +18,7 @@ namespace HDRezka
         public int? CurrentEpisode { get; set; }
 
         public Translation[] Translations { get; set; }
+
+        public string FavsId { get; set; }
     }
 }
