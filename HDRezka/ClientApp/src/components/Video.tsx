@@ -94,7 +94,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
     const onErrorHandler = (e: React.SyntheticEvent) => {
 
         if (videoRef.current?.networkState === 3) {
-            refreshLinksHandler();
+            // refreshLinksHandler();
         }
     }
 
