@@ -12,8 +12,8 @@ namespace HDRezka.Helpers
 {
     public class RezkaFetch
     {
-        const string SEARCH_URL = @"https://rezka.ag/engine/ajax/search.php";
-        const string CDN_SERIES_URL = @"https://rezka.ag/ajax/get_cdn_series/?t=";
+        const string SEARCH_URL = @"https://hdrezka.ag/engine/ajax/search.php";
+        const string CDN_SERIES_URL = @"https://hdrezka.ag/ajax/get_cdn_series/?t=";
 
         private readonly IHttpClientFactory _clientFactory;
 
