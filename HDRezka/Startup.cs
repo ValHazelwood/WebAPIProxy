@@ -42,12 +42,12 @@ namespace HDRezka
 
             services.AddHttpClient("rezka", c =>
             {
-                c.BaseAddress = new Uri("https://rezka.ag");
+                c.BaseAddress = new Uri("https://hdrezka.ag");
                 c.DefaultRequestHeaders.Accept.Clear();
                 c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/x-www-form-urlencoded"));
                 c.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
                 c.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
-                c.DefaultRequestHeaders.Add("Referer", "https://rezka.ag");
+                c.DefaultRequestHeaders.Add("Referer", "https://hdrezka.ag");
                 c.DefaultRequestHeaders.Add("Pragma", "no-cache");
                 c.DefaultRequestHeaders.Add("Connection", "keep-alive");
                 c.DefaultRequestHeaders.Add("Accept-Language", "en-GB,en-US;q=0.9,en;q=0.8");
@@ -56,7 +56,8 @@ namespace HDRezka
 
             }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                //Proxy = new WebProxy("192.168.1.1", 3128)
             });
         }
 
