@@ -57,7 +57,8 @@ namespace HDRezka
             }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
             {
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                //Proxy = new WebProxy("192.168.1.1", 3128)
+                Proxy = WebRequest.GetSystemWebProxy(),
+                DefaultProxyCredentials = CredentialCache.DefaultCredentials
             });
         }
 
