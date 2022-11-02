@@ -21,7 +21,7 @@
     "reinspect": "^1.1.0",
     "typescript": "^3.7.5",
     "use-persisted-reducer": "^2.1.0",
-    "video.js": "^7.7.5"
+    "video.js": "^7.20.3"
   },
   "scripts": {
     "start": "react-scripts start",
