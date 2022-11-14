@@ -17,7 +17,7 @@
     "react-dom": "^16.13.1",
     "react-dropdown": "^1.7.0",
     "react-loader-spinner": "^3.1.14",
-    "react-scripts": "3.4.1",
+    "react-scripts": "5.0.1",
     "reinspect": "^1.1.0",
     "typescript": "^3.7.5",
     "use-persisted-reducer": "^2.1.0",
