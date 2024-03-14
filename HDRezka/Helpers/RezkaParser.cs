@@ -136,7 +136,15 @@ namespace HDRezka.Helpers
             }
 
             seasonsData.Seasons = seasons.Select(x => new Season { Id = x.Key, Episodes = x.Value.ToArray() }).ToArray();
-            
+
+            seasonsData.CDNStreams = GetCDNStreams(jsText);
+
+            var currentSeason = seasons.Keys.First();
+
+            seasonsData.CurrentSeason = currentSeason;
+
+            seasonsData.CurrentEpisode = seasons[currentSeason].First();
+
             return seasonsData;
         }
 
