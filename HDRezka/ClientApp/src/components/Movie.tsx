@@ -60,7 +60,7 @@ const Movie = ({ data }: MovieProps) => {
                     <MediaInfo info={data.searchResult} />
                     <Translation data={data} translationSelected={onTranslationSelected} />
                     <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
-                    <Video data={data} streamUrl={stream.urL2} refreshLinks={refreshLinks} />
+                    <Video data={data} streamUrl={stream.urL1} refreshLinks={refreshLinks} />
                 </div>
             </React.Fragment >);
         }

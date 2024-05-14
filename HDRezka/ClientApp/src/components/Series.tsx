@@ -127,7 +127,7 @@ const Series = ({ data }: SeriesProps) => {
                         <Translation data={data} translationSelected={onTranslationSelected} />
                         <SeriesNav data={data} />
                         <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
-                        <Video data={data} streamUrl={stream.urL2} startCountDownHandler={startCountDownHandler} setVideoOverlayVisible={setVideoOverlayVisible} refreshLinks={refreshLinks} >
+                        <Video data={data} streamUrl={stream.urL1} startCountDownHandler={startCountDownHandler} setVideoOverlayVisible={setVideoOverlayVisible} refreshLinks={refreshLinks} >
                             {videoOverlayVisible && <div className="video-overlay">Next video will start in {countDown} seconds...</div>}
                         </Video>
                     </div>
