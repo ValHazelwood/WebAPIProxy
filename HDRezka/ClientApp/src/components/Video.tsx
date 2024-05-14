@@ -39,7 +39,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
         return () => {
           hls?.destroy();
         };
-      },[]);
+      },[streamUrl]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -57,7 +57,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
 
     const initPlayer = (): Hls => {
         const newHls = new Hls({
-            enableWorker: false,
+            enableWorker: true,
             maxBufferLength: 30,
             lowLatencyMode: true,  
             autoStartLoad: true,
@@ -161,6 +161,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
         <span className="video-buttons">
             <button onClick={fullScreenHandler}>Full screen (A)</button>&nbsp;<button onClick={refreshLinksHandler}>Refresh (B)</button>
         </span>
+        <div>{Hls.isSupported() ? <span>HLS</span>: <span>MP4</span>}</div>
         <div className="video-container">
         {Hls.isSupported() 
             ? 
