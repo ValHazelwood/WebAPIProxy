@@ -11,6 +11,7 @@ import Translation from "./Translation";
 import Quality from "./Quality";
 import SeriesNav from "./SeriesNav";
 import MediaInfo from "./MediaInfo";
+import Hls from "hls.js";
 
 interface SeriesProps {
     data: MediaData;
@@ -127,7 +128,8 @@ const Series = ({ data }: SeriesProps) => {
                         <Translation data={data} translationSelected={onTranslationSelected} />
                         <SeriesNav data={data} />
                         <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
-                        <Video data={data} streamUrl={stream.urL1} startCountDownHandler={startCountDownHandler} setVideoOverlayVisible={setVideoOverlayVisible} refreshLinks={refreshLinks} >
+                        {Hls.isSupported() && <span><a download href={stream.urL2}>MP4 version</a></span>}
+                        <Video data={data} streamUrl={Hls.isSupported() ? stream.urL1 : stream.urL2} startCountDownHandler={startCountDownHandler} setVideoOverlayVisible={setVideoOverlayVisible} refreshLinks={refreshLinks} >
                             {videoOverlayVisible && <div className="video-overlay">Next video will start in {countDown} seconds...</div>}
                         </Video>
                     </div>

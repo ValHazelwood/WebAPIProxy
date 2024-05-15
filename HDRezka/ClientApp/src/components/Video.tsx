@@ -160,8 +160,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
     return (<React.Fragment>
         <span className="video-buttons">
             <button onClick={fullScreenHandler}>Full screen (A)</button>&nbsp;<button onClick={refreshLinksHandler}>Refresh (B)</button>
-        </span>
-        <div>{Hls.isSupported() ? <span>HLS</span>: <span>MP4</span>}</div>
+        </span>        
         <div className="video-container">
         {Hls.isSupported() 
             ? 

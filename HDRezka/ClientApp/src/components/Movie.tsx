@@ -9,6 +9,7 @@ import Video from "./Video";
 import MediaInfo from "./MediaInfo";
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import Hls from "hls.js";
 
 interface MovieProps {
     data: MediaData;
@@ -60,7 +61,8 @@ const Movie = ({ data }: MovieProps) => {
                     <MediaInfo info={data.searchResult} />
                     <Translation data={data} translationSelected={onTranslationSelected} />
                     <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
-                    <Video data={data} streamUrl={stream.urL1} refreshLinks={refreshLinks} />
+                    {Hls.isSupported() && <span><a download href={stream.urL2}>MP4 version</a></span>}
+                    <Video data={data} streamUrl={Hls.isSupported() ? stream.urL1 : stream.urL2} refreshLinks={refreshLinks} />
                 </div>
             </React.Fragment >);
         }
