@@ -159,10 +159,13 @@ namespace HDRezka.Helpers
 
             if (translatorsBlock != null && translatorsBlock.ChildNodes.Count > 0)
             {
-                var translatorsList = translatorsBlock.SelectNodes("ul/li");
+                var translatorsLiList = translatorsBlock.SelectNodes("ul/li");
 
-                return translatorsList
-                .Select(x => new Translation
+                var translatorsLinkList = translatorsBlock.SelectNodes("ul/a");
+
+                var translatorsList = translatorsLiList ?? translatorsLinkList;
+
+                return translatorsList.Select(x => new Translation
                 {
                     Id = Convert.ToInt32(x.Attributes.Single(x => x.Name == "data-translator_id").Value),
                     Name = x.InnerText,
