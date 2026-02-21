@@ -284,25 +284,27 @@ namespace HDRezka.Helpers
 
         private static string DecodeCDNStreams(string encodedStr)
         {
-            const string bk0 = @"$$#!!@#!@##";
-            const string bk1 = @"^^^!@##!!##";
-            const string bk2 = @"####^!!##!@@";
-            const string bk3 = @"@@@@@!##!^^^";
-            const string bk4 = @"$$!!@$$@^!@#$$@";
-            const string file3Separator = @"//_//";
+            return encodedStr;
 
-            var bkArray = new string[] { bk0, bk1, bk2, bk3, bk4 };
+            //const string bk0 = @"$$#!!@#!@##";
+            //const string bk1 = @"^^^!@##!!##";
+            //const string bk2 = @"####^!!##!@@";
+            //const string bk3 = @"@@@@@!##!^^^";
+            //const string bk4 = @"$$!!@$$@^!@#$$@";
+            //const string file3Separator = @"//_//";
 
-            var result = Regex.Unescape(encodedStr[2..]);
+            //var bkArray = new string[] { bk0, bk1, bk2, bk3, bk4 };
 
-            for (var i = 4; i > -1; i--)
-            {
-                result = result.Replace(file3Separator + (bkArray[i]).EncodeBase64(), "");
-            }
+            //var result = Regex.Unescape(encodedStr[2..]);
 
-            result = result.DecodeBase64();           
+            //for (var i = 4; i > -1; i--)
+            //{
+            //    result = result.Replace(file3Separator + (bkArray[i]).EncodeBase64(), "");
+            //}
 
-            return result;
+            //result = result.DecodeBase64();           
+
+            //return result;
         }
     }
 
