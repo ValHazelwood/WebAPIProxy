@@ -88,7 +88,7 @@ namespace HDRezka.Helpers
                     result.URL = DefaultUrl + result.URL;
                 }
 
-                return results;
+                return results.Skip(16);
             }
             finally
             {
