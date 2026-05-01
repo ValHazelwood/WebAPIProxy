@@ -1,3 +1,4 @@
+using HDRezka.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -60,6 +61,9 @@ namespace HDRezka
                 Proxy = WebRequest.GetSystemWebProxy(),
                 DefaultProxyCredentials = CredentialCache.DefaultCredentials
             });
+
+            services.AddSingleton<PuppeteerSearchService>();
+            services.AddSingleton<PuppeteerM3U8Service>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

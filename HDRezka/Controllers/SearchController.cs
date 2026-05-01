@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HDRezka.Helpers;
+﻿using HDRezka.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace HDRezka.Controllers
 {
@@ -11,23 +9,19 @@ namespace HDRezka.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
-        private readonly ILogger<SearchController> _logger;
-        private readonly RezkaFetch _rezkaFetch;
+        private readonly PuppeteerSearchService _puppeteerSearchService;
 
-        public SearchController(ILogger<SearchController> logger, IHttpClientFactory clientFactory)
+        public SearchController(PuppeteerSearchService puppeteerSearchService)
         {
-            _logger = logger;
-            _rezkaFetch = new RezkaFetch(clientFactory);
+            _puppeteerSearchService = puppeteerSearchService;
         }
 
         [HttpPost]
-        public async Task<IEnumerable<SearchResult>> Post([FromBody]string q)
+        public async Task<IEnumerable<SearchResult>> Post([FromBody] string q)
         {
             if (string.IsNullOrEmpty(q)) return null;
 
-            var htmlText =  await _rezkaFetch.GetSearchHtml(q);
-
-            return RezkaParser.GetSearchResult(htmlText);
+            return await _puppeteerSearchService.SearchAsync(q);
         }
     }
 }
