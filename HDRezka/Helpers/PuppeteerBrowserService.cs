@@ -6,36 +6,38 @@ namespace HDRezka.Helpers
 {
     public class PuppeteerBrowserService : IDisposable
     {
-        private const string ChromePath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
-        private static readonly object _lock = new object();
+        private const string ChromePath = "/usr/bin/chromium-browser"; //@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+        private static readonly object _lock = new();
         private static IBrowser _browser;
         private static bool _disposed;
 
         public async Task<IPage> NewPageAsync()
         {
-            if (_disposed)
-                throw new ObjectDisposedException(nameof(PuppeteerBrowserService));
-
-            if (_browser == null || !_browser.IsConnected)
+            if (!_disposed)
             {
-                lock (_lock)
+                if (_browser == null || !_browser.IsConnected)
                 {
-                    if (_browser == null || !_browser.IsConnected)
+                    lock (_lock)
                     {
-                        var launchTask = Puppeteer.LaunchAsync(new LaunchOptions
+                        if (_browser == null || !_browser.IsConnected)
                         {
-                            Headless = true,
-                            ExecutablePath = ChromePath,
-                            Args = new[] { "--no-sandbox", "--disable-setuid-sandbox" }
-                        });
+                            var launchTask = Puppeteer.LaunchAsync(new LaunchOptions
+                            {
+                                Headless = true,
+                                ExecutablePath = ChromePath,
+                                Args = ["--no-sandbox", "--disable-setuid-sandbox"]
+                            });
 
-                        launchTask.Wait();
-                        _browser = launchTask.Result;
+                            launchTask.Wait();
+                            _browser = launchTask.Result;
+                        }
                     }
                 }
+
+                return await _browser.NewPageAsync();
             }
 
-            return await _browser.NewPageAsync();
+            throw new ObjectDisposedException(nameof(PuppeteerBrowserService));
         }
 
         public void Dispose()

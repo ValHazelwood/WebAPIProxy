@@ -5,15 +5,8 @@ using System.Threading.Tasks;
 
 namespace HDRezka.Helpers
 {
-    public class PuppeteerM3U8Service
+    public class PuppeteerM3U8Service(PuppeteerBrowserService browserService)
     {
-        private readonly PuppeteerBrowserService _browserService;
-
-        public PuppeteerM3U8Service(PuppeteerBrowserService browserService)
-        {
-            _browserService = browserService;
-        }
-
         public async Task<IEnumerable<string>> FindM3U8UrlsAsync(string targetUrl)
         {
             if (string.IsNullOrEmpty(targetUrl))
@@ -21,7 +14,7 @@ namespace HDRezka.Helpers
                 throw new ArgumentException("Target URL is required.", nameof(targetUrl));
             }
 
-            await using var page = await _browserService.NewPageAsync();
+            await using var page = await browserService.NewPageAsync();
 
             var m3u8Urls = new List<string>();
 

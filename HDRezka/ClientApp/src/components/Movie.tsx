@@ -61,7 +61,7 @@ const Movie = ({ data }: MovieProps) => {
                     <MediaInfo info={data.searchResult} />
                     <Translation data={data} translationSelected={onTranslationSelected} />
                     <Quality translation={translation} currentQualityId={currentQualityId} qualitySelected={onQualitySelected} />
-                    {Hls.isSupported() && <span><a download href={stream.urL2}>MP4 version</a></span>}
+                    {Hls.isSupported() && <span><a download href={stream.urL2}>M3U8 link</a></span>}
                     <Video data={data} streamUrl={Hls.isSupported() ? stream.urL1 : stream.urL2} refreshLinks={refreshLinks} />
                 </div>
             </React.Fragment >);

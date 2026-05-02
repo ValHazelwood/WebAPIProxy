@@ -1,25 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HDRezka.Helpers;
+﻿using HDRezka.Helpers;
 using HDRezka.Types;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HDRezka.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MovieController : ControllerBase
+    public class MovieController(IHttpClientFactory clientFactory) : ControllerBase
     {
-        private readonly ILogger<MovieController> _logger;
-        private readonly RezkaFetch _rezkaFetch;
-
-        public MovieController(ILogger<MovieController> logger, IHttpClientFactory clientFactory)
-        {
-            _logger = logger;
-            _rezkaFetch = new RezkaFetch(clientFactory);
-        }
+        private readonly RezkaFetch _rezkaFetch = new(clientFactory);
 
         [HttpPost]
         public async Task<IEnumerable<CDNStream>> Post(MovieRequest request)
@@ -28,6 +20,5 @@ namespace HDRezka.Controllers
 
             return RezkaParser.GetCDNStreams(response);
         }
-
     }
 }

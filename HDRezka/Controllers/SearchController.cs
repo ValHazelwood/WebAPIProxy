@@ -7,14 +7,9 @@ namespace HDRezka.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SearchController : ControllerBase
+    public class SearchController(PuppeteerSearchService puppeteerSearchService) : ControllerBase
     {
-        private readonly PuppeteerSearchService _puppeteerSearchService;
-
-        public SearchController(PuppeteerSearchService puppeteerSearchService)
-        {
-            _puppeteerSearchService = puppeteerSearchService;
-        }
+        private readonly PuppeteerSearchService _puppeteerSearchService = puppeteerSearchService;
 
         [HttpPost]
         public async Task<IEnumerable<SearchResult>> Post([FromBody] string q)

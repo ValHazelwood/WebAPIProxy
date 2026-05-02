@@ -1,25 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
-using System.Threading.Tasks;
-using HDRezka.Helpers;
+﻿using HDRezka.Helpers;
 using HDRezka.Types;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HDRezka.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SeasonsController : ControllerBase
+    public class SeasonsController(IHttpClientFactory clientFactory) : ControllerBase
     {
-        private readonly ILogger<SeasonsController> _logger;
-        private readonly RezkaFetch _rezkaFetch;
-
-        public SeasonsController(ILogger<SeasonsController> logger, IHttpClientFactory clientFactory)
-        {
-            _logger = logger;
-            _rezkaFetch = new RezkaFetch(clientFactory);
-        }
+        private readonly RezkaFetch _rezkaFetch = new(clientFactory);
 
         [HttpPost]
         public async Task<SeasonsData> Post(MediaRequest request)

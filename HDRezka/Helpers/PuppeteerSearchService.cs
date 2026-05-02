@@ -7,18 +7,11 @@ using System.Threading.Tasks;
 
 namespace HDRezka.Helpers
 {
-    public class PuppeteerSearchService
+    public class PuppeteerSearchService(PuppeteerBrowserService browserService)
     {
         private const string DefaultUrl = "https://hdrezka.inc";
         private const string SearchInputSelector = "input.js-lightsearch-input.lightsearch-input";
         private const string ResultsSelector = ".lSerachResults.d-flex .sliderItem";
-
-        private readonly PuppeteerBrowserService _browserService;
-
-        public PuppeteerSearchService(PuppeteerBrowserService browserService)
-        {
-            _browserService = browserService;
-        }
 
         public async Task<IEnumerable<SearchResult>> SearchAsync(string searchPhrase, string targetUrl = null)
         {
@@ -27,7 +20,7 @@ namespace HDRezka.Helpers
                 throw new ArgumentException("Search phrase is required.", nameof(searchPhrase));
             }
 
-            await using var page = await _browserService.NewPageAsync();
+            await using var page = await browserService.NewPageAsync();
 
             var url = targetUrl ?? DefaultUrl;
             await page.GoToAsync(url, WaitUntilNavigation.Networkidle2);
@@ -47,7 +40,7 @@ namespace HDRezka.Helpers
             }
             catch
             {
-                return Enumerable.Empty<SearchResult>();
+                return [];
             }
 
             var results = await page.EvaluateFunctionAsync<SearchResult[]>(@"
