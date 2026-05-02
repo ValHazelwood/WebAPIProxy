@@ -64,6 +64,7 @@ namespace HDRezka
 
             services.AddSingleton<PuppeteerSearchService>();
             services.AddSingleton<PuppeteerM3U8Service>();
+            services.AddSingleton<PuppeteerBrowserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

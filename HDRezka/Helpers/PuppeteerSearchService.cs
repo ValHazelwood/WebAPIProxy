@@ -13,11 +13,11 @@ namespace HDRezka.Helpers
         private const string SearchInputSelector = "input.js-lightsearch-input.lightsearch-input";
         private const string ResultsSelector = ".lSerachResults.d-flex .sliderItem";
 
-        private readonly BrowserFetcher _browserFetcher;
+        private readonly PuppeteerBrowserService _browserService;
 
-        public PuppeteerSearchService()
+        public PuppeteerSearchService(PuppeteerBrowserService browserService)
         {
-            _browserFetcher = new BrowserFetcher();
+            _browserService = browserService;
         }
 
         public async Task<IEnumerable<SearchResult>> SearchAsync(string searchPhrase, string targetUrl = null)
@@ -27,40 +27,30 @@ namespace HDRezka.Helpers
                 throw new ArgumentException("Search phrase is required.", nameof(searchPhrase));
             }
 
-            await _browserFetcher.DownloadAsync();
+            await using var page = await _browserService.NewPageAsync();
 
-            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            {
-                Headless = true,
-                Args = new[] { "--no-sandbox", "--disable-setuid-sandbox" }
-            });
+            var url = targetUrl ?? DefaultUrl;
+            await page.GoToAsync(url, WaitUntilNavigation.Networkidle2);
 
-            await using var page = await browser.NewPageAsync();
+            await page.WaitForSelectorAsync(SearchInputSelector, new WaitForSelectorOptions { Timeout = 10000 });
+
+            await page.ClickAsync(SearchInputSelector, new ClickOptions { Count = 3 });
+            await page.Keyboard.PressAsync("Backspace");
+
+            await page.TypeAsync(SearchInputSelector, searchPhrase, new TypeOptions { Delay = 400 });
+
+            await page.WaitForNetworkIdleAsync();
 
             try
             {
-                var url = targetUrl ?? DefaultUrl;
-                await page.GoToAsync(url, WaitUntilNavigation.Networkidle2);
+                await page.WaitForSelectorAsync(ResultsSelector, new WaitForSelectorOptions { Timeout = 5000 });
+            }
+            catch
+            {
+                return Enumerable.Empty<SearchResult>();
+            }
 
-                await page.WaitForSelectorAsync(SearchInputSelector, new WaitForSelectorOptions { Timeout = 10000 });
-
-                await page.ClickAsync(SearchInputSelector, new ClickOptions { ClickCount = 3 });
-                await page.Keyboard.PressAsync("Backspace");
-
-                await page.TypeAsync(SearchInputSelector, searchPhrase, new TypeOptions { Delay = 400 });
-
-                await page.WaitForNetworkIdleAsync();
-
-                try
-                {
-                    await page.WaitForSelectorAsync(ResultsSelector, new WaitForSelectorOptions { Timeout = 5000 });
-                }
-                catch
-                {
-                    return Enumerable.Empty<SearchResult>();
-                }
-
-                var results = await page.EvaluateFunctionAsync<SearchResult[]>(@"
+            var results = await page.EvaluateFunctionAsync<SearchResult[]>(@"
                     () => {
                         const items = document.querySelectorAll('.sliderItem');
                         return Array.from(items).map((item) => {
@@ -83,17 +73,12 @@ namespace HDRezka.Helpers
                     }
                 ");
 
-                foreach (SearchResult result in results)
-                {
-                    result.URL = DefaultUrl + result.URL;
-                }
-
-                return results.Skip(16);
-            }
-            finally
+            foreach (SearchResult result in results)
             {
-                await browser.CloseAsync();
+                result.URL = DefaultUrl + result.URL;
             }
+
+            return results.Skip(16);
         }
     }
 }

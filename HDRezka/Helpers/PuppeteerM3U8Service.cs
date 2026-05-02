@@ -7,11 +7,11 @@ namespace HDRezka.Helpers
 {
     public class PuppeteerM3U8Service
     {
-        private readonly BrowserFetcher _browserFetcher;
+        private readonly PuppeteerBrowserService _browserService;
 
-        public PuppeteerM3U8Service()
+        public PuppeteerM3U8Service(PuppeteerBrowserService browserService)
         {
-            _browserFetcher = new BrowserFetcher();
+            _browserService = browserService;
         }
 
         public async Task<IEnumerable<string>> FindM3U8UrlsAsync(string targetUrl)
@@ -21,15 +21,7 @@ namespace HDRezka.Helpers
                 throw new ArgumentException("Target URL is required.", nameof(targetUrl));
             }
 
-            await _browserFetcher.DownloadAsync();
-
-            await using var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            {
-                Headless = true,
-                Args = new[] { "--no-sandbox", "--disable-setuid-sandbox" }
-            });
-
-            await using var page = await browser.NewPageAsync();
+            await using var page = await _browserService.NewPageAsync();
 
             var m3u8Urls = new List<string>();
 
@@ -42,24 +34,17 @@ namespace HDRezka.Helpers
                 }
             };
 
-            try
+            await page.GoToAsync(targetUrl, WaitUntilNavigation.Networkidle2);
+
+            await page.SetViewportAsync(new ViewPortOptions
             {
-                await page.GoToAsync(targetUrl, WaitUntilNavigation.Networkidle2);
+                Width = 1980,
+                Height = 1080
+            });
 
-                await page.SetViewportAsync(new ViewPortOptions
-                {
-                    Width = 1980,
-                    Height = 1080
-                });
+            await AutoScrollAsync(page);
 
-                await AutoScrollAsync(page);
-
-                await Task.Delay(15000);
-            }
-            finally
-            {
-                await browser.CloseAsync();
-            }
+            await Task.Delay(15000);
 
             return m3u8Urls;
         }
