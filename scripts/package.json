@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  },
+  "description": "Scripts for WebAPIProxy",
+  "name": "webapiproxy-scripts",
+  "scripts": {
+    "select": "node select-season-episode.js"
+  },
+  "version": "1.0.0"
+}

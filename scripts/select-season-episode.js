@@ -1,0 +1,91 @@
+const puppeteer = require('puppeteer');
+
+// Simple delay helper
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function selectSeasonAndEpisode(url, season, episode) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+
+  try {
+    const page = await browser.newPage();
+
+ await page.setRequestInterception(true);
+  page.on('request', (request) => {
+    request.continue();
+  });
+
+  const m3u8Urls = [];
+
+  // Log network responses
+  page.on('response', async (response) => {
+    const url = response.url();
+    //console.log(url);
+    if (url.endsWith('.m3u8')) {
+      m3u8Urls.push(url);
+      console.log("\x1b[32mFound .m3u8 URL:\x1b[0m", url); // Green text for found URL
+    }
+  });
+
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+
+    // Wait for the player to load
+    await page.waitForSelector('hdvbplayer', { timeout: 10000 });
+
+    // Select season - find element by text content
+    const seasonText = `Сезон ${season}`;
+    const seasonElement = await page.evaluateHandle((text) => {
+      const elements = Array.from(document.querySelectorAll('*'));
+      return elements.find(el => el.textContent.trim() === text);
+    }, seasonText);
+
+    if (seasonElement) {
+   const text = await seasonElement.evaluate(el => el.textContent);
+    console.log(text);
+      await seasonElement.evaluate(el => el.click());
+      await delay(1500); // Wait for season selection to process
+    } else {
+      throw new Error(`Season element not found: "${seasonText}"`);
+    }
+
+    // Select episode - find element by text content
+    const episodeText = `${episode} серия`;
+    const episodeElement = await page.evaluateHandle((text) => {
+      const elements = Array.from(document.querySelectorAll('*'));
+      return elements.find(el => el.textContent.trim() === text);
+    }, episodeText);
+
+    if (episodeElement) {
+   const text = await episodeElement.evaluate(el => el.textContent);
+    console.log(text);
+      await episodeElement.evaluate(el => el.click());
+      await delay(1500); // Wait for episode selection to process
+    } else {
+      throw new Error(`Episode element not found: "${episodeText}"`);
+    }
+
+    console.log(`Successfully selected Season ${season}, Episode ${episode}`);
+
+  } catch (error) {
+    console.error('Error:', error.message);
+    throw error;
+  } finally {
+    await browser.close();
+  }
+}
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+if (args.length < 3) {
+  console.error('Usage: node select-season-episode.js <url> <season> <episode>');
+  console.error('Example: node select-season-episode.js "https://example.com" 1 5');
+  process.exit(1);
+}
+
+const [url, season, episode] = args;
+
+selectSeasonAndEpisode(url, parseInt(season), parseInt(episode))
+  .then(() => process.exit(0))
+  .catch(() => process.exit(1));
