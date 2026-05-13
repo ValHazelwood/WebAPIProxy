@@ -6,8 +6,6 @@ import { ContextApp } from "../store/reducer";
 import Movie from "./Movie";
 import Series from "./Series";
 import History from "./History";
-import Loader from 'react-loader-spinner';
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Mode } from "../store/types";
 import 'react-dropdown/style.css';
 
@@ -17,10 +15,10 @@ function App() {
 
   const { loading, errorMessage, mode, mediaData } = state;
 
-  let displayResults: JSX.Element = <SearchList />;
+  let displayResults: React.JSX.Element = <SearchList />;
 
   if (loading && !errorMessage) {
-    displayResults = <Loader type="TailSpin" color="#00BFFF" height={100} width={100} />;
+    displayResults = <div className="loader-container"><div className="loader"></div></div>;
   } else if (errorMessage) {
     displayResults = <div className="errorMessage">{errorMessage.toString()}</div>;
   } else if (mode === Mode.Media && mediaData) {

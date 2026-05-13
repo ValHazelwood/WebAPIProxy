@@ -8,7 +8,7 @@ import Hls from "hls.js";
 interface VideoProps {
     data: MediaData;
     streamUrl: string;
-    startCountDownHandler?: (videoRef: React.RefObject<HTMLVideoElement>) => void;
+    startCountDownHandler?: (videoRef: React.RefObject<HTMLVideoElement | null>) => void;
     setVideoOverlayVisible?: (flag: boolean) => void;
     refreshLinks: () => void;
     children?: React.ReactNode;
@@ -113,7 +113,7 @@ const Video = ({ data, streamUrl, startCountDownHandler, setVideoOverlayVisible,
         refreshLinks();
     }
 
-    useEventListener('keydown', (event: React.KeyboardEvent) => {
+    useEventListener('keydown', (event: KeyboardEvent) => {
         switch (event.which) {
             case 403:
                 setFullScreen();

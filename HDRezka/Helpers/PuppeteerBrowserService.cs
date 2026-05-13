@@ -6,7 +6,8 @@ namespace HDRezka.Helpers
 {
     public class PuppeteerBrowserService : IDisposable
     {
-        private const string ChromePath = "/usr/bin/chromium-browser"; //@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+        private const string ChromePath = "/usr/bin/chromium-browser";
+        //private const string ChromePath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
         private static readonly object _lock = new();
         private static IBrowser _browser;
         private static bool _disposed;

@@ -7,8 +7,6 @@ import Translation from "./Translation";
 import Quality from "./Quality";
 import Video from "./Video";
 import MediaInfo from "./MediaInfo";
-import Loader from 'react-loader-spinner';
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Hls from "hls.js";
 
 interface MovieProps {
@@ -24,12 +22,7 @@ const Movie = ({ data }: MovieProps) => {
     const [currentQualityId, setCurrentQualityId] = useState<string>(data.media.currentQualityId);
 
     if (seriesLoading) {
-        return <Loader
-            type="TailSpin"
-            color="#00BFFF"
-            height={100}
-            width={100}
-        />
+        return <div className="loader-container"><div className="loader"></div></div>;
     }
 
     console.log("Movie rendered");

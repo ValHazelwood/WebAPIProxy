@@ -4,8 +4,6 @@ import Header from "./Header";
 import { ContextApp } from "../store/reducer";
 import ActionService from "../store/ActionService";
 import MediaService from "../store/MediaService";
-import Loader from 'react-loader-spinner';
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Video from "./Video";
 import Translation from "./Translation";
 import Quality from "./Quality";
@@ -34,12 +32,7 @@ const Series = ({ data }: SeriesProps) => {
     const [countDown, setCountDown] = useState<number>(countdownTimeout);
 
     if (seriesLoading) {
-        return <Loader
-            type="TailSpin"
-            color="#00BFFF"
-            height={100}
-            width={100}
-        />
+        return <div className="loader-container"><div className="loader"></div></div>;
     }
 
     console.log("Series rendered");
@@ -94,7 +87,7 @@ const Series = ({ data }: SeriesProps) => {
         }
     }
 
-    const startCountDownHandler = (videoRef: React.RefObject<HTMLVideoElement>) => {
+    const startCountDownHandler = (videoRef: React.RefObject<HTMLVideoElement | null>) => {
 
         if (videoRef && videoRef.current) {
             if (!videoOverlayVisible && (videoRef.current.duration - videoRef.current.currentTime) < countdownStartTimeout) {
