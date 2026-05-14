@@ -1,16 +1,21 @@
 using PuppeteerSharp;
 using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace HDRezka.Helpers
 {
     public class PuppeteerBrowserService : IDisposable
     {
-        private const string ChromePath = "/usr/bin/chromium-browser";
-        //private const string ChromePath = @"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe";
+        private readonly string _chromePath;
         private static readonly object _lock = new();
         private static IBrowser _browser;
         private static bool _disposed;
+
+        public PuppeteerBrowserService(IConfiguration configuration)
+        {
+            _chromePath = configuration["ChromePath"] ?? "/usr/bin/chromium-browser";
+        }
 
         public async Task<IPage> NewPageAsync()
         {
@@ -25,7 +30,7 @@ namespace HDRezka.Helpers
                             var launchTask = Puppeteer.LaunchAsync(new LaunchOptions
                             {
                                 Headless = true,
-                                ExecutablePath = ChromePath,
+                                ExecutablePath = _chromePath,
                                 Args = ["--no-sandbox", "--disable-setuid-sandbox"]
                             });
 
