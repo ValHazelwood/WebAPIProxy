@@ -2,23 +2,30 @@
 using HDRezka.Types;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HDRezka.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MovieController(IHttpClientFactory clientFactory) : ControllerBase
+    public class MovieController(PuppeteerM3U8Service puppeteerM3U8Service) : ControllerBase
     {
-        private readonly RezkaFetch _rezkaFetch = new(clientFactory);
+        private readonly PuppeteerM3U8Service _puppeteerM3U8Service = puppeteerM3U8Service;
 
         [HttpPost]
         public async Task<IEnumerable<CDNStream>> Post(MovieRequest request)
         {
-            var response = await _rezkaFetch.GetCDNSeries(request);
+            var result = (await _puppeteerM3U8Service.FindM3U8UrlsAsync(request.Url)).ToList();
 
-            return RezkaParser.GetCDNStreams(response);
+            return [
+                    new()
+                    {
+                        Quality = "480p",
+                        URL1 = result[0],
+                        URL2 = result[1]
+                    }
+            ];
         }
     }
 }

@@ -207,7 +207,7 @@ const ActionService = {
 
     FetchService.post(
       "movie",
-      `{ "id":${id}, "translationId":${translationId} }`
+        `{ "id":${id}, "translationId":${translationId}, "url":"${mediaData.searchResult.url}" }`
     )
       .then((response) => response.json() as Promise<Stream[]>)
       .then((result) => {

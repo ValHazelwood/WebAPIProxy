@@ -7,5 +7,7 @@ namespace HDRezka.Types
         public int IsAds { get; set; }
 
         public int IsDirector { get; set; }
+
+        public string Url { get; set; }
     }
 }
