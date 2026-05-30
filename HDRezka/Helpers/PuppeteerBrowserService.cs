@@ -30,6 +30,8 @@ namespace HDRezka.Helpers
                             var launchTask = Puppeteer.LaunchAsync(new LaunchOptions
                             {
                                 Headless = true,
+                                //Devtools = true,
+                                //SlowMo = 50,
                                 ExecutablePath = _chromePath,
                                 Args = ["--no-sandbox", "--disable-setuid-sandbox"]
                             });

@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 
 namespace HDRezka.Helpers
 {
+    public class SeasonData
+    {
+        public string SelectedSeason { get; set; }
+
+        public string SelectedEpisode { get; set; }
+    } 
+
     public class SeasonEpisodeSelectorService(PuppeteerBrowserService browserService) : IDisposable
     {
         private readonly PuppeteerBrowserService _browserService = browserService ?? throw new ArgumentNullException(nameof(browserService));
@@ -20,7 +27,7 @@ namespace HDRezka.Helpers
             await SetupPageEvents(page, m3u8Urls);
 
             await page.GoToAsync(url, WaitUntilNavigation.Networkidle0);
-            await page.WaitForSelectorAsync("hdvbplayer", new WaitForSelectorOptions { Timeout = 10000 });
+            await page.WaitForSelectorAsync("hdvbplayer", new WaitForSelectorOptions { Timeout = 15000 });
 
             // Select season
             const string seasonText = "Сезон {0}";
@@ -83,39 +90,39 @@ namespace HDRezka.Helpers
             await SetupPageEvents(page, m3u8Urls);
 
             await page.GoToAsync(url, WaitUntilNavigation.Networkidle0);
-            await page.WaitForSelectorAsync("hdvbplayer", new WaitForSelectorOptions { Timeout = 10000 });
+            await page.WaitForSelectorAsync("hdvbplayer", new WaitForSelectorOptions { Timeout = 15000 });
 
             await Task.Delay(2000); // Wait for M3U8 URLs to be captured
 
-            var result = await page.EvaluateFunctionAsync<dynamic>(@"
-                return {
-                    selectedSeason: (() => {
-                        const elements = Array.from(document.querySelectorAll('hdvbplayer *'));
-                        for (const el of elements) {
-                            const text = el.textContent.trim();
-                            const computedStyle = window.getComputedStyle(el);
-                            if (text.startsWith('Сезон ') && computedStyle.backgroundColor === 'rgb(0, 173, 239)') {
-                                return text;
-                            }
-                        }
-                        return null;
-                    })(),
-                    selectedEpisode: (() => {
-                        const elements = Array.from(document.querySelectorAll('hdvbplayer *'));
-                        for (const el of elements) {
-                            const text = el.textContent.trim();
-                            const computedStyle = window.getComputedStyle(el);
-                            if (text.match(/^\d+ серия/) && computedStyle.backgroundColor === 'rgb(0, 173, 239)') {
-                                return text;
-                            }
-                        }
-                        return null;
-                    })()
-                };
-            ");
+            var result = await page.EvaluateFunctionAsync<SeasonData>(@"
+                () => {
+                // Find selected season
+                var selectedSeason = null;
+                var seasonElements = Array.from(document.querySelectorAll('hdvbplayer *'));
+                for (var i = 0; i < seasonElements.length; i++) {
+                    var el = seasonElements[i];
+                    if (el.textContent.trim().startsWith('Сезон ') && window.getComputedStyle(el).backgroundColor === 'rgb(0, 173, 239)') {
+                        selectedSeason = el.textContent.trim();
+                        break;
+                    }
+                }
 
-            string selectedSeason = result?.selectedSeason;
-            string selectedEpisode = result?.selectedEpisode;
+                // Find selected episode
+                var selectedEpisode = null;
+                var episodeElements = Array.from(document.querySelectorAll('hdvbplayer *'));
+                for (var i = 0; i < episodeElements.length; i++) {
+                    var el = episodeElements[i];
+                    if (el.textContent.trim().match(/^\d+ серия/) && window.getComputedStyle(el).backgroundColor === 'rgb(0, 173, 239)') {
+                        selectedEpisode = el.textContent.trim();
+                        break;
+                    }
+                }
+
+                return { selectedSeason, selectedEpisode };
+            }");
+
+            string selectedSeason = result?.SelectedSeason;
+            string selectedEpisode = result?.SelectedEpisode;
             string lastM3u8Url = m3u8Urls.Count > 0 ? m3u8Urls[m3u8Urls.Count - 1] : null;
 
             Console.WriteLine($"Selected Season: {selectedSeason}");

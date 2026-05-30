@@ -59,6 +59,7 @@ namespace HDRezka
 
             services.AddSingleton<PuppeteerSearchService>();
             services.AddSingleton<PuppeteerM3U8Service>();
+            services.AddSingleton<SeasonEpisodeSelectorService>();
             services.AddSingleton(provider =>
                 new PuppeteerBrowserService(provider.GetRequiredService<IConfiguration>()));
         }

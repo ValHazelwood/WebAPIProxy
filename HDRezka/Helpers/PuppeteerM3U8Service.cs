@@ -21,7 +21,7 @@ namespace HDRezka.Helpers
             page.Response += (sender, e) =>
             {
                 var url = e.Response.Url;
-                if (url.EndsWith(".m3u8"))
+                if (url.EndsWith(".m3u8") || url.EndsWith("kinogo.bi"))
                 {
                     m3u8Urls.Add(url);
                 }
