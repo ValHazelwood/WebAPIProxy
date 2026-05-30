@@ -5,15 +5,10 @@ using System.Threading.Tasks;
 
 namespace HDRezka.Helpers
 {
-    public class SeasonEpisodeSelectorService : IDisposable
+    public class SeasonEpisodeSelectorService(PuppeteerBrowserService browserService) : IDisposable
     {
-        private readonly PuppeteerBrowserService _browserService;
+        private readonly PuppeteerBrowserService _browserService = browserService ?? throw new ArgumentNullException(nameof(browserService));
         private bool _disposed;
-
-        public SeasonEpisodeSelectorService(PuppeteerBrowserService browserService)
-        {
-            _browserService = browserService ?? throw new ArgumentNullException(nameof(browserService));
-        }
 
         public async Task<(bool success, string lastM3u8Url)> SelectSeasonAndEpisodeAsync(string url, int season, int episode)
         {
@@ -29,12 +24,13 @@ namespace HDRezka.Helpers
 
             // Select season
             const string seasonText = "Сезон {0}";
-            var seasonElement = await page.EvaluateFunctionHandleAsync<ElementHandle>(
+            var seasonHandle = await page.EvaluateFunctionHandleAsync(
                 @"(text) => {
                     const elements = Array.from(document.querySelectorAll('*'));
                     return elements.find(el => el.textContent.trim() === text);
                 }",
                 string.Format(seasonText, season));
+            var seasonElement = seasonHandle as ElementHandle;
 
             if (seasonElement != null)
             {
@@ -50,12 +46,13 @@ namespace HDRezka.Helpers
 
             // Select episode
             const string episodeText = "{0} серия";
-            var episodeElement = await page.EvaluateFunctionHandleAsync<ElementHandle>(
+            var episodeHandle = await page.EvaluateFunctionHandleAsync(
                 @"(text) => {
                     const elements = Array.from(document.querySelectorAll('*'));
                     return elements.find(el => el.textContent.trim() === text);
                 }",
                 string.Format(episodeText, episode));
+            var episodeElement = episodeHandle as ElementHandle;
 
             if (episodeElement != null)
             {
